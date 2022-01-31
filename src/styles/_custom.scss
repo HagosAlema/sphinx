@@ -1,0 +1,87 @@
+.container {
+    width: 100%;
+    background-color: black;
+}
+.gradient-bg {
+    background: linear-gradient(180deg, #F37500 0%, #FFFFFF 100%) !important;
+    border-radius: 10px;
+}
+.grey-bg {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 10px;
+}
+
+.nft-bg {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+}
+.black-bg {
+    background-color: black;
+}
+
+.weapon-box-bg {
+    background-color: #0F1118;
+
+}
+
+.weapon-bg {
+    background: rgba(255, 255, 255, 0.01);
+    box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 0px;
+}
+
+.nft-top-bg {
+    background-image: url('../assets/images/nft_bg.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.nft-bottom-bg {
+    background-image: url(../assets/images/weapon-bottom-bg.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.teleport-bg {
+    background: linear-gradient(180deg, #F37500 0%, rgba(0, 0, 0, 0.5) 22.92%);
+    box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 30px;
+}
+.center-in-parent {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+.clock-bg {
+    background-image: url(../assets/images/clock_bg.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 319px;
+    width: 319px;
+}
+
+
+@for $i from 0 through 1200 {
+    .radius-#{$i} {
+      border-radius: #{$i}px;
+    }
+    .font-size-#{$i} {
+        font-size: #{$i}px;
+    }
+    .line-height-#{$i} {
+        line-height: #{$i}px;
+    }
+    .padding-horizontal-#{$i} {
+        padding-left: #{$i}px;
+        padding-right: #{$i}px;
+    }
+    .padding-vertical-#{$i}{
+        padding-top: #{$i}px;
+        padding-bottom: #{$i}px;
+    }
+    .min-height-#{$i} {
+        min-height: #{$i}px;
+    }
+}
+

@@ -1,0 +1,36 @@
+.animation-appear {
+  opacity: 0;
+  animation: appear-up 400ms forwards ease-out;
+}
+
+.animation-appear-up {
+  opacity: 0;
+  animation: appear-up 600ms forwards ease-out;
+}
+
+@keyframes appear-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animation-appear {
+  opacity: 0;
+  animation: appear 400ms forwards ease-out;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

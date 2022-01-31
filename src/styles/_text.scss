@@ -1,0 +1,98 @@
+
+.noto-400 {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.h-gradient {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 64px;
+    line-height: 96px;
+    background: -webkit-linear-gradient(#F37500, #FFFFFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.p1 {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 29px;
+    color: #A9907A;
+}
+
+.p2 {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 29px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.nft-name {
+    font-family: El Messiri;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 28px;
+    /* identical to box height */
+    text-transform: uppercase;
+    color: #FFA15C;
+    /* Text shadow */
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.25);
+}
+
+.text-black {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 27px;
+    /* identical to box height */
+
+
+    color: #000000;
+}
+
+.price-text {
+    font-family: El Messiri;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 31px;
+    color: #FFA15C;
+}
+
+.clock-text {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 24px;
+    color: #F37500;
+    align-items: center;
+    text-align: center;
+}
+.hour-text {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 46px;
+    line-height: 56px;
+    /* identical to box height, or 122% */
+    letter-spacing: 0.05em;
+    color: #F37500;
+}
+
+.heading-white-poppins {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 40px;
+    line-height: 60px;
+
+    color: #FFFFFF;
+}

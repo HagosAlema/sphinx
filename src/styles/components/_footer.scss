@@ -1,0 +1,25 @@
+@import '/src/styles/mixins';
+@import '/src/styles/constants';
+
+.footer {
+  border-top: $neturals-5 1px solid;
+
+  .content {
+    .logo {
+      margin-top: 5px;
+    }
+
+    .menu-item + .menu-item::before {
+      content: '|';
+      padding-right: 1rem;
+      padding-left: 1rem;
+      color: $neturals-3;
+    }
+
+    .icon + .icon::before {
+      content: ' ';
+      padding-right: 0.7rem;
+      padding-left: 0.7rem;
+    }
+  }
+}

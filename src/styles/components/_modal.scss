@@ -1,0 +1,51 @@
+.modal-background {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 18;
+
+  .backdrop {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1;
+  }
+
+  .modal-card {
+    position: relative;
+    border: 1px solid black;
+    width: 454px;
+    z-index: 2;
+
+    .modal-card-inner {
+      .close-button {
+        border: 1px solid $neturals-5;
+        top: 0;
+        right: 0;
+
+        .icon {
+          fill: $neturals-2;
+        }
+
+        &:hover .icon {
+          fill: $neturals-1;
+        }
+
+        &:hover {
+          outline: 1px solid $neturals-1;
+        }
+      }
+
+      .notice-list {
+        list-style: disc;
+      }
+    }
+  }
+}

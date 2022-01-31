@@ -1,0 +1,123 @@
+.featured-art {
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 1552px;
+    height: auto;
+    grid-gap: 32px;
+  }
+
+  .item {
+    display: grid;
+    grid-template-rows: 280px 100px;
+    transition: transform 250ms ease-in-out;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+  }
+
+  .item:nth-child(1) {
+    grid-template-rows: 700px 100px;
+    grid-column: 1/3;
+    grid-row: 1/3;
+  }
+}
+
+.notable-artist {
+  .deco-background {
+    background-color: $neturals-7;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 800px;
+  }
+}
+
+.recent-news {
+  width: $col-3;
+
+  .recent-news-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-row-gap: 96px;
+    grid-column-gap: 30px;
+  }
+  .view-more {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
+// @include responsive(mobile) {
+//   .featured-art {
+//     .grid-container {
+//       grid: none;
+//       width: $mobile-width;
+//     }
+//   }
+//   .recent-news {
+//     width: 100%;
+
+//     .view-more {
+//       position: absolute;
+//       top: 0;
+//       right: 0;
+//     }
+//   }
+// } ;
+
+@include responsive(ipadpro) {
+  .featured-art {
+    .grid-container {
+      width: $col-2;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .item {
+      grid-template-rows: 364px 100px;
+    }
+  }
+  .recent-news {
+    width: $col-3;
+
+    .recent-news-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+@include responsive(tablet) {
+  .featured-art {
+    .grid-container {
+      width: $col-2;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .recent-news {
+    width: $col-2;
+
+    .recent-news-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+@include responsive(mobile) {
+  .featured-art {
+    .grid-container {
+      width: 364px;
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+  .recent-news {
+    width: 364px;
+
+    .recent-news-grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+}
+
+
