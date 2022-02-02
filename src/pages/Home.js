@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {useNavigate } from 'react-router-dom';
+import {ButtonGroup, ToggleButton, Image} from 'react-bootstrap';
 import logo from '../assets/images/main_bg.gif';
 import weapon1 from '../assets/images/black_weapon.png';
 import weapon2 from '../assets/images/red_weapon.png';
@@ -9,7 +10,7 @@ import weapon5 from '../assets/images/eye_weapon.png';
 import weapon6 from '../assets/images/kal_weapon.png';
 import {ReactComponent as Game1} from '../assets/images/game1.svg';
 import {ReactComponent as Game2} from '../assets/images/game2.svg';
-import {ButtonGroup, ToggleButton, Image} from 'react-bootstrap';
+import {ReactComponent as Exchange} from '../assets/images/svg/transform.svg'
 const menus = [
     { name: 'Game-Art', value: '1' },
     { name: 'Game-Item', value: '2' },
@@ -73,20 +74,6 @@ const Home = () => {
                     <h3 className='heading-white-poppins centered'>NFT Trade</h3>
                     <p className='p2'>NFT 작품을 올리고 유저들과 거래하세요</p>
                 </div>
-                {/* <div className='row top-60'>
-                    <div className='col-3 padding-horizontal-4'>
-                        <button className='col-12 radius-10 gradient-bg padding-vertical-5'>Game-Art</button>
-                    </div>
-                    <div className='col-3 padding-horizontal-4'>
-                        <button className='col-12 radius-10 grey-bg white padding-vertical-5'>Game Item</button>
-                    </div>
-                    <div className='col-3 padding-horizontal-4'>
-                        <button className='col-12 radius-10 grey-bg white padding-vertical-5'>Screenshot</button>
-                    </div>
-                    <div className='col-3 padding-horizontal-4'>
-                        <button className='col-12 radius-10 grey-bg white padding-vertical-5'>Game Character</button>
-                    </div>
-                </div> */}
                 <div className='row top-80'>
                     <ButtonGroup>
                         {menus.map((menu, idx) => (
@@ -125,8 +112,11 @@ const Home = () => {
                     <div className='col-4'>
                         <NFT name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id}/>
                     </div>
+                    <div className="col-4 centered">
+                        <Exchange />
+                    </div>
                     <div className='col-4'>
-                        <NFT name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id}/>
+                        <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/>
                     </div>
                 </div>
                 
