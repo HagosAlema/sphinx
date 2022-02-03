@@ -43,6 +43,11 @@ const Teleportation = () => {
                             <Game2 />
                         </div>  
                     </div>
+                    <div className="centered">
+                        <button 
+                            onClick={()=>navigate('/transform')} 
+                            className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-5 height-48 top-48 text-black'>시작하기 </button>
+                    </div>
                 </div>
             </div>
         </div>

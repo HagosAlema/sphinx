@@ -24,7 +24,7 @@ const weapons = [
     {name: "SPACE GUN", id: 4, image: weapon3, price: 430},
     {name: "EYE GUN", id: 5, image: weapon4, price: 432},
     {name: "BLACK KAL", id: 6, image: weapon6, price: 230}
-]
+];
 const NFT = ({id, name, img, price})=>{
     const navigate = useNavigate()
     return (
@@ -119,7 +119,11 @@ const Home = () => {
                         <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/>
                     </div>
                 </div>
-                
+                <div className="centered">
+                    <button 
+                        onClick={()=>navigate('/transform')} 
+                        className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-5 height-48 top-48 text-black'>시작하기</button>
+                </div>
             </div>
             <div>
                 <div className='col-12 top-60'>
@@ -147,7 +151,11 @@ const Home = () => {
                         </div>  
                     </div>
                 </div>
-                
+                <div className="centered">
+                    <button 
+                        onClick={()=>navigate('/transform')} 
+                        className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-5 height-48 top-48 text-black'>시작하기</button>
+                </div>
             </div>
         </div>
     )
