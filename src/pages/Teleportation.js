@@ -5,13 +5,6 @@ import {ReactComponent as Game1} from '../assets/images/game1.svg';
 import {ReactComponent as Game2} from '../assets/images/game2.svg';
 // import weapons from "../data/weapons";
 
-import weapon1 from '../assets/images/black_weapon.png';
-import weapon2 from '../assets/images/red_weapon.png';
-import weapon3 from '../assets/images/white_weapon.png';
-import weapon4 from '../assets/images/space_weapon.png';
-import weapon5 from '../assets/images/eye_weapon.png';
-import weapon6 from '../assets/images/kal_weapon.png';
-
 
 const Teleportation = () => {
     const navigate = useNavigate()

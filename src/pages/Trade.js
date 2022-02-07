@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import {ButtonGroup, ToggleButton, Image} from 'react-bootstrap';
+// import {useNavigate} from 'react-router-dom';
+import {ButtonGroup, ToggleButton} from 'react-bootstrap';
 import NFT from '../components/NFT';
 import weapon1 from '../assets/images/black_weapon.png';
 import weapon2 from '../assets/images/red_weapon.png';
@@ -23,8 +23,8 @@ const weapons = [
     {name: "BLACK KAL", id: 6, image: weapon6, price: 230}
 ]
 const Trade = () => {
-    const navigate = useNavigate()
-    const [checked, setChecked] = useState(false);
+    // const navigate = useNavigate()
+    // const [checked, setChecked] = useState(false);
     const [radioValue, setRadioValue] = useState('1');
     return(
         <div className='col-12 top-108'>
@@ -33,20 +33,6 @@ const Trade = () => {
                     <h3 className='heading-white-poppins centered'>NFT Trade</h3>
                     <p className='p2'>NFT 작품을 올리고 유저들과 거래하세요</p>
                 </div>
-                {/* <div className='row top-60'>
-                    <div className='col-3 padding-horizontal-4'>
-                        <button className='col-12 radius-10 gradient-bg padding-vertical-5'>Game-Art</button>
-                    </div>
-                    <div className='col-3 padding-horizontal-4'>
-                        <button className='col-12 radius-10 grey-bg white padding-vertical-5'>Game Item</button>
-                    </div>
-                    <div className='col-3 padding-horizontal-4'>
-                        <button className='col-12 radius-10 grey-bg white padding-vertical-5'>Screenshot</button>
-                    </div>
-                    <div className='col-3 padding-horizontal-4'>
-                        <button className='col-12 radius-10 grey-bg white padding-vertical-5'>Game Character</button>
-                    </div>
-                </div> */}
                 <div className='row top-80'>
                     <ButtonGroup>
                         {menus.map((menu, idx) => (
