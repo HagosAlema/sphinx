@@ -40,6 +40,17 @@ const Nav = () => {
                             >
                                 NFT Teleportation
                             </NavLink>
+                            <NavLink to={`/home`} 
+                                className={({ isActive }) => isActive ? "name font-weight-600 neturals-5 to-color-white-hover link left-48 gradient-btn radius-4 padding-horizontal-10 text-black" : " gradient-btn radius-4 name font-weight-600 neturals-5 to-color-white-hover link left-48 padding-horizontal-10 text-black"}
+                            >
+                                0 SOL
+                            </NavLink>
+
+                            <NavLink to={`/connect`} 
+                                className={({ isActive }) => isActive ? "name font-weight-600 neturals-5 to-color-white-hover link left-24 padding-horizontal-10 text-connect" : " name font-weight-600 neturals-5 to-color-white-hover link left-24 padding-horizontal-10 text-connect"}
+                            >
+                                지갑 연결
+                            </NavLink>
                         </nav>
                     </div>
                 </div>

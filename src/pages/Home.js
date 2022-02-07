@@ -61,7 +61,7 @@ const Home = () => {
                     <h1 className='h-gradient'>Explore The <br/>First NFT <br/>Game Exchange</h1>
                     <p className='p1 top-36 padding-right-48'>국내 최초 NFT와 게임을 연결하는 이차원 게이트 스핑크스 스핑크스 플랫폼 내부에서 NFT를 거래하고,  프타의 지팡이를 이용해 원하는 게임 아이템 모양으로 변형하고, 투탕카멘의 게이트를 이용해 다른 게임으로 자신의 NFT를 이동시키세요
                     </p>
-                    <button onClick={()=>navigate('/transform')} className='gradient-bg padding-horizontal-60 padding-vertical-20 radius-20 height-68 top-48 text-black'>Get started </button>
+                    <button onClick={()=>navigate('/trade')} className='gradient-bg padding-horizontal-60 padding-vertical-20 radius-20 height-68 top-48 text-black'>Get started </button>
                 </div>
                 <div className='col-7'>
                     <div>
@@ -69,7 +69,7 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-            <div className='col-12 top-72'>
+            {/* <div className='col-12 top-72'>
                 <div className='col-12'>
                     <h3 className='heading-white-poppins centered'>NFT Trade</h3>
                     <p className='p2'>NFT 작품을 올리고 유저들과 거래하세요</p>
@@ -93,8 +93,8 @@ const Home = () => {
                         ))}
                     </ButtonGroup>
                 </div>
-            </div>
-            <div className='row top-48'>
+            </div> */}
+            {/* <div className='row top-48'>
                 {weapons.map((weapon, idx)=>(
                 <div className='col-4 bottom-16'>
                     <NFT name={weapon.name} price={weapon.price} img={weapon.image} id={weapon.id}/>
@@ -130,8 +130,8 @@ const Home = () => {
                     <h3 className='heading-white-poppins centered'>NFT Teleportation</h3>
                     <p className='p2'>투탕카멘의 게이트는 다른 차원으로 이동할 수 있는 <br /> 고대의 유물안에서 발견된 이차원 전송 게이트입니다. <br />자신이 가지고 있는 게임 아이템을 다른 게임으로 전송해보세요.</p>
                 </div>
-            </div>
-            <div className='teleport-bg padding-12 top-60 bottom-108'>
+            </div> */}
+            {/* <div className='teleport-bg padding-12 top-60 bottom-108'>
                 <h3 className='heading-white-poppins centered'>{`Tutankhamun’s Gate is Open`}</h3>
                 <div className='top-48'>
                     <div className='col-12  centered top-60'>
@@ -156,7 +156,7 @@ const Home = () => {
                         onClick={()=>navigate('/transform')} 
                         className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-5 height-48 top-48 text-black'>시작하기</button>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
