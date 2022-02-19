@@ -2,8 +2,13 @@ import React, {useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import {Image} from 'react-bootstrap';
 
-const NFT = ({id, name, img, price})=>{
+const NFT = ({id, name, img, price, buyWeapon})=>{
     const navigate = useNavigate()
+
+    const buy = () => {
+        buyWeapon(id, name, price, img)
+        console.log(id,name,price);
+    }
     return (
         <div className='nft-bg padding-24 padding-horizontal-48' >
             <div className='weapon-box-bg'>
@@ -21,7 +26,7 @@ const NFT = ({id, name, img, price})=>{
                     <p className='price-text centered'>{price} CHURR</p>
                 </div>
             </div>
-            <button onClick={()=>navigate('/transform')} className='col-12 gradient-bg padding-vertical-4 radius-10 height-48 top-24 text-black'>구매 하기 </button>
+            <button onClick={buy} className='col-12 gradient-bg padding-vertical-4 radius-10 height-48 top-24 text-black'>구매 하기 </button>
         </div>
     )
 }

@@ -34,6 +34,22 @@
     border-radius: 0px;
 }
 
+.filter-bg {
+  background: #0A0A0D;
+  box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+}
+
+.searchbar-bg {
+  background: #FFF;
+  border-radius: 20px;
+}
+
+.black-bg-20 {
+  background-color: #000;
+  border-radius: 20px;
+}
+
 .nft-top-bg {
     background-image: url('../assets/images/nft_bg.png');
     background-size: contain;
@@ -56,12 +72,28 @@
     margin-left: auto;
     margin-right: auto;
 }
+.center-vertical {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.form-control {
+  width: 76% !important;
+  border: 0px solid rgb(0 0 0 / 0%);
+  padding: 0%;
+}
 .clock-bg {
     background-image: url(../assets/images/clock_bg.svg);
     background-size: cover;
     background-repeat: no-repeat;
     height: 319px;
     width: 319px;
+}
+
+.select-bg {
+  background: linear-gradient(180deg, #F37501 0%, #FFFFFF 100%) !important;
+}
+.form-select {
+  color: #FFF;
 }
 
 
@@ -93,6 +125,15 @@
     // backdrop-filter: blur(16px);
     border-radius: 16px;
 }
+.purchase-modal-bg {
+  background: #24252D;
+/* Black/1 */
+
+  border: 2px solid #2D2E36;
+  box-sizing: border-box;
+  border-radius: 16px;
+  padding: 0px !important;
+}
 
 .transparent-bg {
     background-color: transparent;
@@ -104,6 +145,14 @@
     display: inline-block;
     text-overflow: ellipsis;
     background-color: white;
+}
+
+.css-187mznn-MuiSlider-root {
+  color: #F37501 !important;
+}
+
+.modal-content{
+  background-color: transparent !important;
 }
 
 .signup-page {
@@ -123,6 +172,9 @@
       .menus {
         width: 1552px;
       }
+    }
+    .white-bg {
+      background: #ffff00 !important;
     }
   
     .signup-form {
