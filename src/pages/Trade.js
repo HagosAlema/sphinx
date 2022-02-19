@@ -8,6 +8,7 @@ import weapon3 from '../assets/images/white_weapon.png';
 import weapon4 from '../assets/images/space_weapon.png';
 import weapon5 from '../assets/images/eye_weapon.png';
 import weapon6 from '../assets/images/kal_weapon.png';
+
 const menus = [
     { name: 'Game-Art', value: '1' },
     { name: 'Game-Item', value: '2' },
@@ -55,7 +56,7 @@ const Trade = () => {
             </div>
             <div className='row top-48'>
                 {weapons.map((weapon, idx)=>(
-                <div className='col-4 bottom-16'>
+                <div className='col-12 col-sm-12 col-md-6 col-lg-4 bottom-16'>
                     <NFT name={weapon.name} price={weapon.price} img={weapon.image} id={weapon.id}/>
                 </div>
                 ))}

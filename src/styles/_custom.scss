@@ -88,3 +88,96 @@
     }
 }
 
+.modal-bg {
+    background: rgba(248, 248, 249, 0.7);
+    // backdrop-filter: blur(16px);
+    border-radius: 16px;
+}
+
+.transparent-bg {
+    background-color: transparent;
+}
+
+.btn-wrap-text {
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    text-overflow: ellipsis;
+    background-color: white;
+}
+
+.signup-page {
+    position: relative;
+    top: 0;
+    bottom: 0;
+    z-index: 3;
+    .logo {
+      .st0 {
+        fill: black !important;
+      }
+    }
+    .signup-nav {
+      height: 56px;
+      z-index: 3;
+  
+      .menus {
+        width: 1552px;
+      }
+    }
+  
+    .signup-form {
+      min-height: calc(100vh - 216px);
+  
+      .form-inner {
+        // width: 760px;
+        width: 520px;
+  
+        .content {
+          z-index: 3;
+  
+          &.register-form {
+            animation-delay: 600ms;
+          }
+  
+          .input-section {
+            .label {
+              width: 300px;
+            }
+            .status-icon {
+              width: 17px;
+              height: 17px;
+            }
+  
+            .viewPassword {
+              width: 24px;
+              height: 24px;
+            }
+  
+            .continue-bottun {
+              width: 88px;
+              height: 88px;
+              right: 0px;
+              top: 0px;
+              font-size: 8px;
+  
+              &.reCaptcha {
+                top: 40px;
+              }
+            }
+          }
+  
+          .message-block .case {
+            height: 44px;
+          }
+          li:hover {
+            box-shadow: 0 0 11px rgba(100, 100, 100, 0.4);
+          }
+        }
+      }
+    }
+  
+    .signup-footer {
+      z-index: 3;
+    }
+  }
+

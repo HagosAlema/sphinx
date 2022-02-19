@@ -1,9 +1,35 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import {ReactComponent as Logo} from '../assets/images/logo/Logo.svg'
+import {Button} from 'react-bootstrap';
+import Connect from "../pages/Connect";
+const {ethereum} = window
 
 const Nav = () => {
     const navigate = useNavigate()
+
+    const [address, setAddress] = useState(ethereum.selectedAddress)
+    const [buttnTxt, setButtonTxt] = useState('지갑 연결')
+    const [showModal, setShowModal] = useState(false)
+
+    const setModal = () => {
+        // ethereum.request({ method: 'eth_requestAccounts' });
+        // console.log('Connect clikced');
+        // setAddress(ethereum.selectedAddress);
+        
+        console.log('setModal');
+        setShowModal(true)
+    }
+
+    const resetModal = () => {
+        console.log('resetModal');
+        setShowModal(false)
+    }
+
+    useEffect(()=>{
+        setAddress(ethereum.selectedAddress)
+    },[])
+
     return (
         <>
             <header
@@ -40,19 +66,33 @@ const Nav = () => {
                             >
                                 NFT Teleportation
                             </NavLink>
-                            <NavLink to={`/home`} 
-                                className={({ isActive }) => isActive ? "name font-weight-600 neturals-5 to-color-white-hover link left-48 gradient-btn radius-4 padding-horizontal-10 text-black" : " gradient-btn radius-4 name font-weight-600 neturals-5 to-color-white-hover link left-48 padding-horizontal-10 text-black"}
-                            >
-                                0 SOL
-                            </NavLink>
 
-                            <NavLink to={`/connect`} 
-                                className={({ isActive }) => isActive ? "name font-weight-600 neturals-5 to-color-white-hover link left-24 padding-horizontal-10 text-connect" : " name font-weight-600 neturals-5 to-color-white-hover link left-24 padding-horizontal-10 text-connect"}
+                            <Button to={`/home`} 
+                                className="btn-light left-48 btn-wrap-text"
+                                style={{textOverflow:'ellipsis', width: 150, backgroundColor: "#00FFFFFF", whiteSpace: 'nowrap'}}
+                                variant="outline-none"
+                                disabled
                             >
-                                지갑 연결
-                            </NavLink>
+                                {address? address : '0 SOL'}
+                            </Button>
+
+                            <Button
+                                variant="outline-light"
+                                onClick={()=>setModal()}
+                                className="menu-active name font-weight-600 neturals-5 to-color-white-hover link left-48 transparent-bg"
+                                // className="name font-weight-600 neturals-5 to-color-white-hover link left-48 gradient-btn radius-4 padding-horizontal-10 text-black"
+                            >
+                                {address? 'MyPage':'지갑 연결'}
+                            </Button>
+
+                            {/* <NavLink to={`/connect`} 
+                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-48" : "name font-weight-600 neturals-5 to-color-white-hover link left-48"}
+                            >
+                                Connect
+                            </NavLink> */}
                         </nav>
                     </div>
+                    {showModal ? <Connect resetModal={resetModal}/> : null}
                 </div>
             </header>
         </>

@@ -7,6 +7,7 @@ const Home = lazy(() => import('./pages/Home'));
 const Trade = lazy(()=>import('./pages/Trade'));
 const Transform = lazy(()=>import('./pages/Transform'));
 const Teleportation = lazy(() => import('./pages/Teleportation'));
+const Connect = lazy(() => import('./pages/Connect'))
 const Nav = lazy(()=>import('./components/Nav'))
 
 const Switches = () => {
@@ -19,6 +20,7 @@ const Switches = () => {
                 <Route path="/trade" element={<Trade />} />
                 <Route path="/transform" element={<Transform /> } />
                 <Route path="/teleportation" element={<Teleportation /> } />
+                <Route path="/connect" element={<Connect/>} />
             </Routes>
         </div>
     )
