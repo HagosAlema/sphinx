@@ -87,7 +87,7 @@ const Trade = () => {
                         </div>
                     </div>
                     <div className='nft-bottom-bg height-82'>
-                        <p className='price-text centered'>{nftPrice}</p>
+                        <p className='price-text centered'>{nftPrice} CHURR</p>
                     </div>
                 </div>
             </div>
@@ -120,17 +120,13 @@ const Trade = () => {
                         <h2 className='text-white centered top-16'>NFT Trade</h2>
                         <div className='max-width top-16 bottom-32' style={{backgroundColor: '#2D2E36', height: 1}}></div>
                         {/* <div className='centered padding-vertical-72 top-32 bottom-12'><p className='purchase-nft-body '>정말로 구매 하시겠습니까?</p></div> */}
-                        <div className='centered'>
+                        <div className='centered d-flex flex-column'>
                             <Confirm/>
+                            <p className='purchase-nft-body top-8'>구매 완료!</p>
                         </div>
                         
                         <div className='d-flex flex-row centered top-72 bottom-32'>
                             <button onClick={()=>{setShowConfirm(false)}} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>확인 </button>
-                            {/* <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setShow(false)}}> */}
-                                {/* <div className='black-bg-20  text-white centered padding-horizontal-16 height-46'> */}
-                                    {/* <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p> */}
-                                {/* </div> */}
-                            {/* </div> */}
                         </div>
                     </Modal.Body>
                 </Modal>

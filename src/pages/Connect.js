@@ -89,12 +89,13 @@ const Connect = ({ resetModal }) => {
     <Modal show={show}  className="top-108">
         <Modal.Body className="modal-bg">
             {/* <div className="content register-form relative col justify-center padding-40 border-radius-24 background-white box-shadow animation-appear top-108"> */}
-            <div>
-            <ul>
-                <li className="top-12 justify-between border-radius-10">
-                    <div className="d-flex flex-row justify-content-between padding-16 max-width">
-                        <div>
+            <div className=''>
+            <ul className=''>
+                <li className="top-12 justify-between border-radius-10 text-black">
+                    <div className="d-flex flex-row justify-content-between padding-top-16 max-width">
+                        <div className='d-flex flex-column'>
                             <span className="font-28 font-weight-600">Connect to wallet</span>
+                            <span className='red-text'>지금은 Metamask랑만 연동됩니다!</span>
                         </div>
                         <button className="link" onClick={()=>{
                             setShow(false)
@@ -104,7 +105,7 @@ const Connect = ({ resetModal }) => {
                         </button>
                     </div>
                 </li>
-                <li className="top-12 justify-between box-shadow border-radius-10 link">
+                <li className=" justify-between box-shadow radius-10 link white-bg">
                     <button className="d-flex flex-row justify-content-between padding-16 max-width" onClick={() => metamaskLogin()}>
                         <div>
                             <span className="font-28 font-weight-600">MetaMask</span>
@@ -114,7 +115,7 @@ const Connect = ({ resetModal }) => {
                         </div>
                     </button>
                 </li>
-                <li className="top-12 justify-between box-shadow border-radius-10 link">
+                <li className="top-12 justify-between box-shadow radius-10 link white-bg">
                     <button className="d-flex flex-row justify-content-between padding-16 max-width" onClick={notify}>
                         <div>
                             <span className="font-28 line-height-28 font-weight-600">Wemix Wallet</span>
@@ -122,7 +123,7 @@ const Connect = ({ resetModal }) => {
                         <Wemix />
                     </button>
                 </li>
-                <li className="top-12 justify-between box-shadow border-radius-10 link">
+                <li className="top-12 justify-between box-shadow radius-10 link white-bg">
                     <button className="d-flex flex-row justify-content-between padding-16 max-width" onClick={notify}>
                         <div>
                             <span className="font-28 font-weight-600">Bitcoin Wallet</span>
@@ -130,7 +131,7 @@ const Connect = ({ resetModal }) => {
                         <Bitcoin />
                     </button>
                 </li>
-                <li className="top-12 justify-between box-shadow border-radius-10 link">
+                <li className="top-12 justify-between box-shadow border-radius-10 link white-bg">
                     <button className="d-flex flex-row justify-content-between padding-16 max-width" onClick={notify}>
                         <div>
                             <span className="font-28 font-weight-600">Churr Wallet</span>
