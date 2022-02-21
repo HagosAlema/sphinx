@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import {ReactComponent as Logo} from '../assets/images/logo/Logo.svg'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { accountAtom } from "../atoms/state";
 import {Button} from 'react-bootstrap';
 import Connect from "../pages/Connect";
 const {ethereum} = window
@@ -11,14 +13,21 @@ const Nav = () => {
     const [address, setAddress] = useState(ethereum.selectedAddress)
     const [buttnTxt, setButtonTxt] = useState('지갑 연결')
     const [showModal, setShowModal] = useState(false)
+    const walletAddress = useRecoilValue(accountAtom)
+    // const [selectedAddress, setSelectedAddress] = useRecoilState(accountAtom)
+    const setSelectedAddress = useSetRecoilState(accountAtom)
 
-    const setModal = () => {
+    const connect = () => {
         // ethereum.request({ method: 'eth_requestAccounts' });
         // console.log('Connect clikced');
         // setAddress(ethereum.selectedAddress);
+        if(!walletAddress) {
+            console.log('setModal');
+            setShowModal(true)
+        } else {
+
+        }
         
-        console.log('setModal');
-        setShowModal(true)
     }
 
     const resetModal = () => {
@@ -27,8 +36,11 @@ const Nav = () => {
     }
 
     useEffect(()=>{
-        setAddress(ethereum.selectedAddress)
-    },[])
+        if(window.ethereum !== 'undefined'){
+            setAddress(ethereum.selectedAddress)
+            setSelectedAddress(ethereum.selectedAddress)
+        } 
+    },[walletAddress])
 
     return (
         <>
@@ -45,45 +57,51 @@ const Nav = () => {
                                 SPHINX
                             </NavLink>
                             <NavLink to={`/`} 
-                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-48" : "name font-weight-600 neturals-5 to-color-white-hover link left-48"}
+                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-40" : "name font-weight-600 neturals-5 to-color-white-hover link left-40"}
                             >
                                 Home
                             </NavLink>
 
                             <NavLink to={`/trade`} 
-                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-48" : "name font-weight-600 neturals-5 to-color-white-hover link left-48"}
+                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-40" : "name font-weight-600 neturals-5 to-color-white-hover link left-40"}
                             >
                                 NFT Trade
                             </NavLink>
                             <NavLink to={`/transform`} 
-                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-48" : "name font-weight-600 neturals-5 to-color-white-hover link left-48"}
+                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-40" : "name font-weight-600 neturals-5 to-color-white-hover link left-40"}
                             >
                                 Design Transform
                             </NavLink>
 
                             <NavLink to={`/teleportation`} 
-                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-48" : "name font-weight-600 neturals-5 to-color-white-hover link left-48"}
+                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-40" : "name font-weight-600 neturals-5 to-color-white-hover link left-40"}
                             >
                                 NFT Teleportation
                             </NavLink>
 
-                            <Button to={`/home`} 
-                                className="btn-light left-48 btn-wrap-text"
+                            <button to={`/home`} 
+                                className="gradient-bg height-40 padding-horizontal-8 left-48 btn-wrap-text"
                                 style={{textOverflow:'ellipsis', width: 150, backgroundColor: "#00FFFFFF", whiteSpace: 'nowrap'}}
                                 variant="outline-none"
                                 disabled
                             >
-                                {address? address : '0 SOL'}
-                            </Button>
+                                {address? address : '0 CHURR'}
+                            </button>
 
-                            <Button
+                            {!walletAddress ?(<Button
                                 variant="outline-light"
-                                onClick={()=>setModal()}
-                                className="menu-active name font-weight-600 neturals-5 to-color-white-hover link left-48 transparent-bg"
+                                onClick={()=>connect()}
+                                className="menu-active name font-weight-600 neturals-5 to-color-white-hover link left-40 transparent-bg"
                                 // className="name font-weight-600 neturals-5 to-color-white-hover link left-48 gradient-btn radius-4 padding-horizontal-10 text-black"
                             >
-                                {address? 'MyPage':'지갑 연결'}
-                            </Button>
+                                지갑 연결
+                            </Button>): 
+                            (
+                                <NavLink to={`/mypage`} 
+                                className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-40" : "name font-weight-600 neturals-5 to-color-white-hover link left-40"}                            >
+                                My Page
+                            </NavLink>
+                            )}
 
                             {/* <NavLink to={`/connect`} 
                                 className={({ isActive }) => isActive ? "menu-active name font-weight-600 neturals-5 to-color-white-hover link left-48" : "name font-weight-600 neturals-5 to-color-white-hover link left-48"}

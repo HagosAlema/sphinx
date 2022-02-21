@@ -55,6 +55,19 @@
     background-size: contain;
     background-repeat: no-repeat;
 }
+
+.stat-input {
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: 0;
+  background-color: transparent;
+  color: #fff;
+}
+.nft-bg-blank {
+  background-image: url('../assets/images/nft_bg1.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
 .nft-bottom-bg {
     background-image: url(../assets/images/weapon-bottom-bg.svg);
     background-size: contain;

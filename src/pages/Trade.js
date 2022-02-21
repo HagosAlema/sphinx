@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom'
 // import {useNavigate} from 'react-router-dom';
 import {ButtonGroup, ToggleButton, FormControl, FormSelect, Modal, Image} from 'react-bootstrap';
-import {Slider} from '@mui/material'
+import {Slider, TextField} from '@mui/material'
+
 import NFT from '../components/NFT';
 import weapon1 from '../assets/images/black_weapon.png';
 import weapon2 from '../assets/images/red_weapon.png';
@@ -10,10 +11,16 @@ import weapon3 from '../assets/images/white_weapon.png';
 import weapon4 from '../assets/images/space_weapon.png';
 import weapon5 from '../assets/images/eye_weapon.png';
 import weapon6 from '../assets/images/kal_weapon.png';
+import normal from '../assets/images/normal.png'
+import epic from '../assets/images/epic.png'
+import legendary from '../assets/images/legendary.png'
+import rare from '../assets/images/rare.png'
 import {ReactComponent as Search} from '../assets/images/svg/search.svg'
 import {ReactComponent as Expand} from '../assets/images/svg/expand.svg'
 import {ReactComponent as Collapse} from '../assets/images/svg/shrink.svg'
 import {ReactComponent as Confirm} from '../assets/images/svg/confirmed.svg'
+import {ReactComponent as UploadIcon} from '../assets/images/svg/upload.svg'
+import { borderColor } from '@mui/system';
 
 const menus = [
     { name: 'Game-Art', value: '1' },
@@ -30,6 +37,7 @@ const weapons = [
     {name: "BLACK KAL", id: 6, image: weapon6, price: 230}
 ]
 const Trade = () => {
+    const hiddenFileInput = useRef(null)
     const navigate = useNavigate()
     // const [checked, setChecked] = useState(false);
     const [radioValue, setRadioValue] = useState('1');
@@ -48,6 +56,12 @@ const Trade = () => {
     const [nftName, setNftName] = useState('')
     const [nftPrice, setNftPrice] = useState(0)
     const [nftImage, setNftImage] = useState(null)
+    const [uploadDialog, setUploadDialog] = useState(false)
+    const [localImage, setLocalImage] = useState(null)
+    const [itemName, setItemName]=useState('')
+    const [itemType, setItemType] = useState('')
+    const [itemPrice, setItemPrice] = useState(0)
+    const [itemImage, setItemImage] = useState(null)
 
     const handleSliderChange = (event, newValue) => {
         setSliderValue(newValue)
@@ -76,12 +90,12 @@ const Trade = () => {
         return (
             <div className='padding-horizontal-48 top-16' >
                 <div className='weapon-box-bg'>
-                    <div className='nft-top-bg padding-24 height-138'>
+                    <div className='nft-top-bg padding-8 height-124'>
                         <p className='nft-name'>{nftName}</p>
                     </div>
                     <div className='centered weapon-bg top-8 right-8 left-8'>
                         <div className='col-12 centered '>
-                            <div className='col-12 top-20 bottom-20 img-fluid centered padding-16'>
+                            <div className='col-12 top-10 bottom-10 img-fluid centered padding-16'>
                                 <Image src={nftImage} alt="NFT" fluid={true} className='img-fluid' responsive/>
                             </div>
                         </div>
@@ -93,12 +107,276 @@ const Trade = () => {
             </div>
         )
     }
+
+    const NFT3 = ({id, name, img, price})=>{
+        return (
+            <div className='padding-horizontal-48 top-16' >
+                <div className='weapon-box-bg'>
+                    <div className='nft-top-bg padding-8 height-124'>
+                        <p className='nft-name'>{itemName}</p>
+                    </div>
+                    <div className='centered weapon-bg top-8 right-8 left-8'>
+                        <div className='col-12 centered '>
+                            <div className='col-12 top-10 bottom-10 img-fluid centered padding-16'>
+                                <Image src={itemImage} alt="NFT" fluid={true} className='img-fluid' responsive/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='nft-bottom-bg height-82'>
+                        <p className='price-text centered'>{itemPrice} CHURR</p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    const NFT2 = ()=>{
+        return (
+            <div className='' >
+                <div className='weapon-box-bg'>
+                    <div className='nft-top-bg padding-8 height-138'>
+                        <p className='nft-name'>No Name</p>
+                    </div>
+                    <div className='centered weapon-bg top-8 right-8 left-8'>
+                        <div className='col-12 centered '>
+                            <div className='col-12 img-fluid centered'>
+                                {/* <Image src={nftImage} alt="NFT" fluid={true} className='img-fluid' responsive/> */}
+                                <Image src={URL.createObjectURL(localImage)} 
+                                    className="padding-horizontal-48" 
+                                    style={{width: '100%'}}/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='height-60 max-width top-16'>
+                        <p className='price-text size-10 centered' style={{fontSize: 12}}>가격이 아직 설정되지 않았습니다</p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+
+
+
+
+    const upload = () => {
+        setUploadDialog(true)
+    }
+
+
+    const handleUploadClick = (event) => {
+        hiddenFileInput.current.click()
+    }
+
+    const [previewImageDialog, setPreviewImageDialog] = useState(false)
+    const [statDialog, setStatDialog] = useState(false)
+    const [weaponPreview, setWeaponPreview] = useState(false)
+    const [uploadConfirm, setUploadConfirm] = useState(false)
+
+    const onFileChange = (event) => {
+        const file = event.target.files[0]
+        setLocalImage(file)
+        setItemImage(URL.createObjectURL(file))
+        setPreviewImageDialog(true)
+        setUploadDialog(false)
+        console.log(file)
+    }
+
+    const handleTypeChange = (event) => {
+        setItemType(event.target.value)
+        console.log(event.target.value);
+    }
+
+    const handleNameChange = (event) => {
+        setItemName(event.target.value)
+        console.log(event.target.value)
+    }
+
+    const handleItemPrice = (event) => {
+        setItemPrice(event.target.value)
+        console.log(event.target.value)
+    }
     
     return(
         <div className='row top-108'>
-            {show ? (
-                <Modal show={show}  className="top-108 centered radius-16">
+            {
+                uploadDialog ? (
+                    <Modal show={uploadDialog} className="top-48 centered radius-16" >
+                        <Modal.Body
+                            className="purchase-modal-bg max-width radius-16" 
+                            style={{overflowY: 'scroll'}}
+                        >
+                            <h2 className='text-white centered top-16'>Upload NFT</h2>
+                            <div className='max-width top-8' style={{backgroundColor: '#2D2E36', height: 1}}></div>
+                            {/* <div className='centered padding-vertical-16 bottom-16'><p className='purchase-nft-body '>정말로 구매 하시겠습니까?</p></div> */}
+                            {/* <NFT1 /> */}
+                            <div 
+                                className="padding-horizontal-48 padding-vertical-24">
+                                <div className="d-flex flex-column centered padding-vertical-24 radius-10"
+                                    style={{borderStyle:'dotted', borderColor: '#454545', borderWidth: 1, width: 'auto'}}>
+                                    <UploadIcon />
+                                    <p className="p1 text-white">파일을 드래그나 드롭하기</p>
+                                    <p className="p1 text-white font-size-14 top-8">or</p>
+                                    <button className="p1 text-black padding-vertical-16 padding-horizontal-48 radius-10 top-24"
+                                        style={{backgroundColor: '#FFA15C'}}
+                                        onClick={handleUploadClick}
+                                    >
+                                    파일 고르기
+                                    </button>
+                                    <input 
+                                        ref={hiddenFileInput} type="file" style={{display: 'none'}} 
+                                        onChange={onFileChange}
+                                    />
+                                    {/* <Image src={URL.createObjectURL(localImage)} style={{height: 'auto', width: 'auto'}}/> */}
+                                </div>
+                            </div>
+                            <div className='d-flex flex-row centered top-16 bottom-16'>
+                                <button onClick={()=>setUploadDialog(false)} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>올리기 </button>
+                                <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setUploadDialog(false)}}>
+                                    {/* <div className='black-bg-20  text-white centered padding-horizontal-16 height-46'> */}
+                                        <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
+                                    {/* </div> */}
+                                </div>
+                            </div>
+                        </Modal.Body>
+
+                    </Modal>
+                ): null
+            }
+            {previewImageDialog ? (
+                <Modal show={previewImageDialog}>
+                <Modal.Body
+                            className="purchase-modal-bg max-width radius-16" 
+                            style={{overflowY: 'scroll'}}
+                        >
+                            <h2 className='text-white centered top-16'>Upload NFT</h2>
+                            <div className='max-width top-8' style={{backgroundColor: '#2D2E36', height: 1}}></div>
+                            <div 
+                                className="padding-horizontal-48 padding-vertical-24">
+                                <div className="d-flex flex-column centered"
+                                    >
+                                    <NFT2 />
+                                </div>
+                            </div>
+                            <div className='d-flex flex-row centered top-16 bottom-16'>
+                                <button onClick={()=>{
+                                    setPreviewImageDialog(false); 
+                                    setStatDialog(true);
+                                    }} 
+                                    className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>설정하기 </button>
+                                <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setPreviewImageDialog(false)}}>
+                                    {/* <div className='black-bg-20  text-white centered padding-horizontal-16 height-46'> */}
+                                        <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
+                                    {/* </div> */}
+                                </div>
+                            </div>
+                        </Modal.Body>
+                </Modal>
+            ): null}
+            {statDialog ? (
+                <Modal show={statDialog}>
+                    <Modal.Body
+                        className="purchase-modal-bg max-width radius-16" 
+                        style={{overflowY: 'scroll'}}
+                    >
+                        <h2 className='text-white centered top-16'>Upload NFT</h2>
+                        <div className='max-width top-8' style={{backgroundColor: '#2D2E36', height: 1}}></div>
+                        <div className="d-flex flex-column padding-horizontal-48 padding-vertical-24 text-white">
+                            <p>아이템 이름</p>
+                            <input 
+                            onChange={handleNameChange}
+                            type="text" placeholder="아이템 이름" className="stat-input height-32 top-4 font-size-18" style={{borderColor: '#fff'}}/>
+                            <p className="top-16">아이템 종류</p>
+                            {/* <input type="text" placeholder="아이템 이름" className="stat-input height-32 top-4 font-size-18" style={{borderColor: '#fff', borderWidth: 2}}/> */}
+                            <select value={itemType}
+                            onChange={handleTypeChange}
+                            className="transparent-bg stat-input font-size-18">
+                                <option selected value="Knife">Knife</option>
+                                <option value="Gun">Gun</option>
+                                <option value="Hair">Hair</option>
+                                <option value="Cloth">Cloth</option>
+                            </select>
+                            <div className="d-flex flex-row justify-content-between stat-input top-16">
+                                <input 
+                                onChange={handleItemPrice}
+                                type="number" placeholder="" className="transparent-bg stat-input" style={{border: 'none', width: "60%"}}/>
+                                <p >CHURR</p>
+                            </div>
+
+                            <p className="text-white font-size-12 top-16">Rarity</p>
+                            <p className="font-size-12" style={{color: '#F80000', opacity: .7}}>지금은 LEGENDARY만 설정할 수 있습니다!</p>
+                            <div className="d-flex flex-column top-16">
+                                <div className="d-flex flex-row centered">
+                                    <Image src={normal} style={{height:60}} className="right-8"/>
+                                    <Image src={rare} style={{height:60}} className="left-8"/>
+                                </div>
+                                <div className="d-flex flex-row centered top-8">
+                                    <Image src={epic} style={{height:60}} className="right-8"/>
+                                    <Image src={legendary} style={{height:60}} className="left-8"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='d-flex flex-row centered top-16 bottom-16'>
+                            <button onClick={()=>{
+                                setStatDialog(false)
+                                setWeaponPreview(true)
+                            }} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>올리기</button>
+                            <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setStatDialog(false)}}>
+                                {/* <div className='black-bg-20  text-white centered padding-horizontal-16 height-46'> */}
+                                    <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
+                                {/* </div> */}
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+            ) : null
+            }
+
+            {weaponPreview ? (
+                <Modal show={weaponPreview}  className="top-48 centered radius-16" style={{overflowY: 'scroll'}}>
+                    <Modal.Body className="purchase-modal-bg max-width radius-16" style={{overflowY: 'scroll'}}>
+                        <h2 className='text-white centered top-16'>Upload NFT</h2>
+                        <div className='max-width top-8' style={{backgroundColor: '#2D2E36', height: 1}}></div>
+                        <div className='centered padding-vertical-16 bottom-16'><p className='purchase-nft-body '>해당 내용으로 올리시겠습니까?</p></div>
+                        <NFT3/>
+                        <div className='d-flex flex-row centered top-16 bottom-16'>
+                            <button onClick={()=>{
+                                setWeaponPreview(false)
+                                setUploadConfirm(true)
+                            }}
+                            className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>올리기 </button>
+                            <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setWeaponPreview(false)}}>
+                                {/* <div className='black-bg-20  text-white centered padding-horizontal-16 height-46'> */}
+                                    <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
+                                {/* </div> */}
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+            ): null}
+
+
+            {uploadConfirm ? (
+                <Modal show={uploadConfirm}  className="top-48 centered radius-16">
                     <Modal.Body className="purchase-modal-bg max-width radius-16">
+                        <h2 className='text-white centered top-16'>Upload NFT</h2>
+                        <div className='max-width top-16 bottom-32' style={{backgroundColor: '#2D2E36', height: 1}}></div>
+                        {/* <div className='centered padding-vertical-72 top-32 bottom-12'><p className='purchase-nft-body '>정말로 구매 하시겠습니까?</p></div> */}
+                        <div className='centered d-flex flex-column'>
+                            <Confirm/>
+                            <p className='purchase-nft-body top-8'>성공적으로 지갑에 저장되었습니다!</p>
+                        </div>
+                        
+                        <div className='d-flex flex-row centered top-72 bottom-32'>
+                            <button onClick={()=>{setUploadConfirm(false)}} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>확인 </button>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+            ): null}
+
+            {show ? (
+                <Modal show={show}  className="top-48 centered radius-16" style={{overflowY: 'scroll'}}>
+                    <Modal.Body className="purchase-modal-bg max-width radius-16" style={{overflowY: 'scroll'}}>
                         <h2 className='text-white centered top-16'>NFT Trade</h2>
                         <div className='max-width top-8' style={{backgroundColor: '#2D2E36', height: 1}}></div>
                         <div className='centered padding-vertical-16 bottom-16'><p className='purchase-nft-body '>정말로 구매 하시겠습니까?</p></div>
@@ -114,8 +392,9 @@ const Trade = () => {
                     </Modal.Body>
                 </Modal>
             ): null}
+
             {showConfirm ? (
-                <Modal show={showConfirm}  className="top-108 centered radius-16">
+                <Modal show={showConfirm}  className="top-48 centered radius-16">
                     <Modal.Body className="purchase-modal-bg max-width radius-16">
                         <h2 className='text-white centered top-16'>NFT Trade</h2>
                         <div className='max-width top-16 bottom-32' style={{backgroundColor: '#2D2E36', height: 1}}></div>
@@ -290,11 +569,19 @@ const Trade = () => {
             </div>
             <div className='col-9 padding-left-24'>
                 <div className='col-12 top-72'>
-                    <div className='col-12'>
+                    <div className='d-flex flex-row justify-content-around'>
+                        {/* place holder */}
+                        <p>   </p>
                         <h3 className='heading-white-poppins centered'>NFT Trade</h3>
-                        <p className='p2'>NFT 작품을 올리고 유저들과 거래하세요</p>
+                        <button
+                            className="gradient-btn height-48 text-black radius-10 padding-horizontal-24"
+                            onClick={()=>upload()}
+                        > 
+                            UPLOAD NFT
+                        </button>
+                        {/* <p className='p2'>NFT 작품을 올리고 유저들과 거래하세요</p> */}
                     </div>
-                    <div className='row top-80'>
+                    <div className='row top-24'>
                         <ButtonGroup>
                             {menus.map((menu, idx) => (
                             <ToggleButton

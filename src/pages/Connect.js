@@ -5,8 +5,8 @@ import {ReactComponent as Close} from '../assets/images/logo/CLOSE.svg'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 //Recoil
-// import { accountAtom, walletKindAtom } from 'atoms/state';
-// import { useRecoilState, useRecoilValue } from 'recoil';
+import { accountAtom, walletKindAtom } from '../atoms/state';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 // //config
 // import { API } from 'config';
 // //axios
@@ -34,7 +34,8 @@ const Connect = ({ resetModal }) => {
         position: toast.POSITION.BOTTOM_CENTER
     });
 //   const navigate = useNavigate();
-//   const walletAccount = useRecoilValue(accountAtom);
+  const walletAccount = useRecoilValue(accountAtom);
+  const setWalletAccount = useSetRecoilState(accountAtom)
 //   const [walletKind, setWalletKind] = useRecoilState(walletKindAtom);
 
 //   const { metamaskConnect, kaikasConnect } = useAuth();
@@ -74,8 +75,18 @@ const Connect = ({ resetModal }) => {
 //     registerUser();
 //   }, [walletAccount, walletKind]);
 
-    const metamaskLogin = () => {
-
+    const metamaskLogin = async() => {
+        if(window.ethereum !== 'undefined') {
+            window.ethereum.request({method: 'eth_requestAccounts'}).then(result=>{
+                console.log(result[0]);
+                //set account address
+                setWalletAccount(result[0])
+                setShow(false)
+                resetModal(false)
+            })
+        } else {
+            window.open('https://metamask.io/', '_blank');
+        }
     }
 
     const kaikasLogin = () => {
