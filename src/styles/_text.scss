@@ -99,6 +99,11 @@
     letter-spacing: 0.05em;
     color: #F37500;
 }
+.nft-id-text {
+    background: linear-gradient(180deg, #C09645 7.5%, #FFC977 53.75%, #C09645 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
 .heading-white-poppins {
     font-family: 'Poppins';

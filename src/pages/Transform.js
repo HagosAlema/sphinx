@@ -70,7 +70,7 @@ const Transform = () => {
                 </div>
             </div>
 
-            {step==1 ? 
+            {step===1 ? 
             <div className='nft-bg padding-24 padding-horizontal-48 top-60'>
                 <div className="d-flex flex-row justify-content-between" style={{overflow: 'none'}}> 
                         <div className="d-flex flex-row top-16 bottom-16">
@@ -125,7 +125,7 @@ const Transform = () => {
                         className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-5 height-48 top-48 text-black'>변환하기</button>
                 </div>
             </div>: null}
-            {step==2 ?(
+            {step===2 ?(
             <div className='nft-bg padding-horizontal-48 top-60'>
                 <div className="d-flex flex-row justify-content-between left-48" style={{overflow: 'none'}}> 
                     <div className="height-80 centered">

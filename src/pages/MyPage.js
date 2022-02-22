@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
@@ -6,21 +6,72 @@ import banner from '../assets/images/banner.png'
 import user from "../assets/images/svg/user-solid.svg";
 import { accountAtom } from "../atoms/state";
 
+import weapon1 from '../assets/images/black_weapon.png';
+import weapon2 from '../assets/images/red_weapon.png';
+import weapon3 from '../assets/images/white_weapon.png';
+import weapon4 from '../assets/images/space_weapon.png';
+import weapon5 from '../assets/images/eye_weapon.png';
+import weapon6 from '../assets/images/kal_weapon.png';
+import NFTSlider from "../components/NFTSlider";
+
 const menus = [
     {id: 1, name: 'Game1 Items'},
     {id: 2, name: 'Game2 Items'},
     {id: 3, name: 'NFT Storage'}
 ];
 
+const weapons = [
+    {name: "BLACK RIFFLE", id: 1, image: weapon1, price: 130},
+    {name: "RED RIFFLE", id: 2, image: weapon2, price: 123},
+    {name: "WHITE RIFFLE", id: 3, image: weapon5, price: 125},
+    {name: "SPACE GUN", id: 4, image: weapon3, price: 430},
+    {name: "EYE GUN", id: 5, image: weapon4, price: 432},
+    {name: "BLACK KAL", id: 6, image: weapon6, price: 230}
+]
+
+
+
 const MyPage = () => {
 
     const walletAddress = useRecoilValue(accountAtom)
     const [selectedMenu, setSelectedMenu] = useState(1)
+    const [items, setItems] = useState([])
 
     const onMenuChange = (menu) => {
         const {id, name} = menu;
         setSelectedMenu(id)
+        if(id===1){
+            var itemArr = [
+                weapons[0],
+                weapons[1],
+                weapons[2]
+            ]
+            setItems(itemArr)
+        } else if(id === 2) {
+            var itemArr = [
+                weapons[2],
+                weapons[3],
+                weapons[4]
+            ]
+            setItems(itemArr)
+        } else {
+            var itemArr = [
+                weapons[3],
+                weapons[4],
+                weapons[5]
+            ]
+            setItems(itemArr)
+        }
     }
+
+    useEffect(()=>{
+        var itemArr = [
+            weapons[1],
+            weapons[2],
+            weapons[3]
+        ]
+        setItems(itemArr)
+    },[])
 
 
     return (
@@ -53,7 +104,27 @@ const MyPage = () => {
                         ))
                     }
                 </div>
-            
+
+                <div className="row  bottom-108 top-60">
+                {
+                    items.map((weapon, idx) => (
+                        <div
+                            id={idx}
+                            key={idx}
+                            className="col-4 top-16"
+                        >
+                            <NFTSlider
+                                name={weapon.name}
+                                id={weapon.id}
+                                img={weapon.image}
+                                price={weapon.price}
+                                buyWeapon={()=>{}}
+                            />
+                        </div>
+                    ))
+                }
+
+            </div>
         </div>
     )
 }

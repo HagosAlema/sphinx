@@ -22,6 +22,9 @@ import {ReactComponent as Confirm} from '../assets/images/svg/confirmed.svg'
 import {ReactComponent as UploadIcon} from '../assets/images/svg/upload.svg'
 import { borderColor } from '@mui/system';
 
+import web3 from '../web3';
+import axios from 'axios';
+
 const menus = [
     { name: 'Game-Art', value: '1' },
     { name: 'Game-Item', value: '2' },
@@ -37,6 +40,9 @@ const weapons = [
     {name: "BLACK KAL", id: 6, image: weapon6, price: 230}
 ]
 const Trade = () => {
+
+
+    web3.eth.getAccounts().then(console.log)
     const hiddenFileInput = useRef(null)
     const navigate = useNavigate()
     // const [checked, setChecked] = useState(false);
@@ -62,6 +68,7 @@ const Trade = () => {
     const [itemType, setItemType] = useState('')
     const [itemPrice, setItemPrice] = useState(0)
     const [itemImage, setItemImage] = useState(null)
+    const [imageBuff, setImageBuffer] = useState(null)
 
     const handleSliderChange = (event, newValue) => {
         setSliderValue(newValue)
@@ -155,10 +162,6 @@ const Trade = () => {
         )
     }
 
-
-
-
-
     const upload = () => {
         setUploadDialog(true)
     }
@@ -175,6 +178,28 @@ const Trade = () => {
 
     const onFileChange = (event) => {
         const file = event.target.files[0]
+        const reader = new window.FileReader()
+        reader.readAsArrayBuffer(file)
+        reader.onloadend = () => {
+            console.log('Buffer Data:', Buffer(reader.result));
+            const buffer = Buffer(reader.result)
+            setImageBuffer(Buffer(buffer))
+            const formData = new FormData()
+            const stat = {
+                type: 'Knife',
+                price: 230,
+                name: 'Black Knife'
+            }
+            formData.append("image",file)
+            formData.append("game", "game1")
+            formData.append("stat", stat)
+
+            axios.post('http://localhost:3030/mintGameNFT',formData).then(result=>{
+                console.log(result)
+            }).catch(e=>{
+                console.log(e)
+            })
+        }
         setLocalImage(file)
         setItemImage(URL.createObjectURL(file))
         setPreviewImageDialog(true)

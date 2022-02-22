@@ -5,92 +5,61 @@ import {ReactComponent as Close} from '../assets/images/logo/CLOSE.svg'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 //Recoil
-import { accountAtom, walletKindAtom } from '../atoms/state';
+import { accountAtom, balance, walletKindAtom } from '../atoms/state';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-// //config
-// import { API } from 'config';
-// //axios
-// import axios from 'axios';
-// //hooks
-// import useAuth from 'hooks/useAuth';
-//svg
 import { ReactComponent as MetaMask } from '../assets/images/logo/METAMASK.svg';
 import { ReactComponent as Wemix } from '../assets/images/logo/WEMIX.svg';
 import { ReactComponent as Bitcoin } from '../assets/images/logo/BITCOIN.svg';
 import { ReactComponent as Churr } from '../assets/images/logo/CHURR.svg';
 
+import web3 from '../web3';
+import nft from '../contracts/nft';
+import token from '../contracts/token';
+import ratio from '../contracts/ratio';
+
 
 // const CONNECTOR_SESSION = 'connector-session';
 
-// const headers = {
-//   Authorization: API.authorization,
-// };
 
 toast.configure()
+
 const Connect = ({ resetModal }) => {
+
+
+    console.log(web3.version);
+
     const [show, setShow] = useState(true)
+    
+    const navigate = useNavigate();
+    const walletAccount = useRecoilValue(accountAtom);
+    const setWalletAccount = useSetRecoilState(accountAtom);
+    const setBalance = useSetRecoilState(balance);
+
     const notify = () => toast.error("Feature coming soon!", {
         autoClose: 1999,
         position: toast.POSITION.BOTTOM_CENTER
     });
-//   const navigate = useNavigate();
-  const walletAccount = useRecoilValue(accountAtom);
-  const setWalletAccount = useSetRecoilState(accountAtom)
-//   const [walletKind, setWalletKind] = useRecoilState(walletKindAtom);
-
-//   const { metamaskConnect, kaikasConnect } = useAuth();
-
-//   const registerUser = async () => {
-//     const body = {
-//       wallet: walletAccount,
-//     };
-//     try {
-//       const response = await axios.post(API.walletConnect, body, {
-//         headers: headers,
-//       });
-//       if ((await response.data.success) === 0) {
-//         setIsRegistered(true);
-//       } else {
-//         window.sessionStorage.setItem(CONNECTOR_SESSION, walletAccount);
-
-//         navigate('/');
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-
-//   const metamaskLogin = async () => {
-//     setWalletKind('METAMASK');
-//     await metamaskConnect();
-//   };
-
-//   const kaikasLogin = async () => {
-//     setWalletKind('KAIKAS');
-//     await kaikasConnect();
-//   };
-
-//   useEffect(() => {
-//     if (!walletAccount || !walletKind) return;
-//     registerUser();
-//   }, [walletAccount, walletKind]);
-
     const metamaskLogin = async() => {
         if(window.ethereum !== 'undefined') {
-            window.ethereum.request({method: 'eth_requestAccounts'}).then(result=>{
-                console.log(result[0]);
-                //set account address
-                setWalletAccount(result[0])
-                setShow(false)
-                resetModal(false)
-            })
+            const accounts = await window.ethereum.request({method: 'eth_requestAccounts'})
+            setWalletAccount(accounts[0])
+            console.log(accounts[0])
+            const b = await nft.methods.balanceOf(accounts[0]).call()
+            setBalance(b)
+            console.log("balances", b);
+            setShow(false)
+            resetModal(false)
+            // .then(result=>{
+            //     console.log(result[0]);
+            //     //set account address
+            //     setWalletAccount(result[0])
+            //     nft.balanceOf(result[0]).call();
+            //     setShow(false)
+            //     resetModal(false)
+            // })
         } else {
             window.open('https://metamask.io/', '_blank');
         }
-    }
-
-    const kaikasLogin = () => {
-
     }
 
 

@@ -5,6 +5,11 @@ export const accountAtom = atom({
   default: null,
 });
 
+export const balance = atom({
+  key: 'balance',
+  default: 0
+})
+
 export const walletKindAtom = atom({
   key: 'walletKindAtom',
   default: null,

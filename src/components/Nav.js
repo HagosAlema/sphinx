@@ -2,9 +2,10 @@ import React, {useEffect, useState} from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import {ReactComponent as Logo} from '../assets/images/logo/Logo.svg'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { accountAtom } from "../atoms/state";
+import { accountAtom, balance } from "../atoms/state";
 import {Button} from 'react-bootstrap';
 import Connect from "../pages/Connect";
+import nft from "../contracts/nft";
 const {ethereum} = window
 
 const Nav = () => {
@@ -14,6 +15,8 @@ const Nav = () => {
     const [buttnTxt, setButtonTxt] = useState('지갑 연결')
     const [showModal, setShowModal] = useState(false)
     const walletAddress = useRecoilValue(accountAtom)
+    const accountBalance = useRecoilValue(balance)
+    const setAccountBalance = useSetRecoilState(balance)
     // const [selectedAddress, setSelectedAddress] = useRecoilState(accountAtom)
     const setSelectedAddress = useSetRecoilState(accountAtom)
 
@@ -35,11 +38,23 @@ const Nav = () => {
         setShowModal(false)
     }
 
-    useEffect(()=>{
+    
+
+    useEffect( ()=>{
         if(window.ethereum !== 'undefined'){
             setAddress(ethereum.selectedAddress)
             setSelectedAddress(ethereum.selectedAddress)
+            console.log("account", ethereum.selectedAddress);
+            const getAccountBalance = async () =>{
+                var b = await nft.methods.balanceOf(ethereum.selectedAddress).call();
+                console.log(b);
+                setAccountBalance(b)
+            }
+            if(ethereum.selectedAddress !== 'undefined') {
+                getAccountBalance()
+            }
         } 
+        
     },[walletAddress])
 
     return (
@@ -81,11 +96,12 @@ const Nav = () => {
 
                             <button to={`/home`} 
                                 className="gradient-bg height-40 padding-horizontal-8 left-48 btn-wrap-text"
-                                style={{textOverflow:'ellipsis', width: 150, backgroundColor: "#00FFFFFF", whiteSpace: 'nowrap'}}
+                                style={{textOverflow:'ellipsis', width: 150, backgroundColor: "#00FFFFFF", whiteSpace: 'nowrap', display: address? 'inline': 'none'}}
                                 variant="outline-none"
                                 disabled
+                                
                             >
-                                {address? address : '0 CHURR'}
+                                {accountBalance?accountBalance:'NIL'} CHURR
                             </button>
 
                             {!walletAddress ?(<Button

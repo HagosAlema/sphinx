@@ -63,8 +63,8 @@
   background-color: transparent;
   color: #fff;
 }
-.nft-bg-blank {
-  background-image: url('../assets/images/nft_bg1.png');
+.nft-square-bg {
+  background-image: url('../assets/images/nft_square_bg.png');
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -131,6 +131,27 @@
     .min-height-#{$i} {
         min-height: #{$i}px;
     }
+    .width-#{$i}-percent {
+      width: percentage($i);
+    }
+    .border-#{$i} {
+      border-width: #{i};
+      border-color: #FFFFFF;
+      border-style: solid;
+    }
+    .margin-top-#{$i} {
+      margin-top: #{$i}px;
+    }
+}
+.teleport-modal {
+  background-color: transparent;
+}
+.teleport-modal {
+  .modal-dialog {
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .modal-bg {
