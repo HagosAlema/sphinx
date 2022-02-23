@@ -10,7 +10,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { ReactComponent as MetaMask } from '../assets/images/logo/METAMASK.svg';
 import { ReactComponent as Wemix } from '../assets/images/logo/WEMIX.svg';
 import { ReactComponent as Bitcoin } from '../assets/images/logo/BITCOIN.svg';
-import { ReactComponent as Churr } from '../assets/images/logo/CHURR.svg';
+import { ReactComponent as CHURR } from '../assets/images/svg/churr1.svg';
 
 import web3 from '../web3';
 import nft from '../contracts/nft';
@@ -116,7 +116,7 @@ const Connect = ({ resetModal }) => {
                         <div>
                             <span className="font-28 font-weight-600">Churr Wallet</span>
                         </div>
-                        <Churr />
+                        <CHURR />
                     </button>
                 </li>
             </ul>
