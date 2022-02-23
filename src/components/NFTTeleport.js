@@ -17,7 +17,7 @@ const items = [
     {id: 3, name: "Empty"}
 ]
 
-const NFTSlider = ({id, name, img, price, buyWeapon})=>{
+const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
     const navigate = useNavigate()
     const [selectedIcon, setSelectedIcon] = useState(0)
 
@@ -65,8 +65,9 @@ const NFTSlider = ({id, name, img, price, buyWeapon})=>{
                 <div className="top-8">
                     <div className="d-flex flex-row padding-horizontal-36">
                         <SwordIcon />
-                        <p className="left-16 nft-id-text"
-                        style={{fontSize: '2.5rem'}}>800-1000</p>
+                        <p className="left-16 nft-power-text"
+                            style={{fontSize: '2.5rem'}}
+                        >800-1000</p>
                     </div>
                     {/* <div className="d-flex flex-row padding-horizontal-36">
                         <p 
@@ -76,7 +77,9 @@ const NFTSlider = ({id, name, img, price, buyWeapon})=>{
                         style={{fontSize: 16, lineHeight: '25px', color: '#90CC54'}}
                         >+50 </p>
                     </div> */}
-                    <div className="padding-horizontal-36 padding-vertical-48">
+                    <div 
+                        style={{paddingTop: '2rem', paddingBottom: '2rem', paddingLeft: '2rem', paddingRight:'2rem'}}
+                    >
                         {items.map((item, idx)=>(
                             <div 
                                 id={idx}
@@ -111,9 +114,16 @@ const NFTSlider = ({id, name, img, price, buyWeapon})=>{
                 ))
             }
             </div>
+            <div className="d-flex centered top-16">
+                <button onClick={()=>onItemSelect(id, name, price, img)} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>선택하기</button>
+            </div>
 
         </div>
     )
 }
 
-export default NFTSlider;
+export default NFTTeleport;
+
+
+
+

@@ -17,6 +17,7 @@ import weapon5 from '../assets/images/eye_weapon.png';
 import weapon6 from '../assets/images/kal_weapon.png';
 import NFTSlider from "../components/NFTSlider";
 import { Modal, ModalBody } from "react-bootstrap";
+import NFTTeleport from "../components/NFTTeleport";
 
 const weapons = [
     {name: "BLACK RIFFLE", id: 1, image: weapon1, price: 130},
@@ -28,11 +29,15 @@ const weapons = [
 ]
 
 
+const options = ['Game 1', 'Game 2']
+
 const Teleportation = () => {
     const navigate = useNavigate()
     const [dialog1, setDialog1] = useState(false)
     const [dialog2, setDialog2] = useState(false)
     const [dialog3, setDialog3] = useState(false)
+    const [option1, setOption1] = useState('Game 1')
+    const [option2, setOption2] = useState('Game 2')
 
     const renderer = ({ hours, minutes, seconds, completed }) => {
         if (completed) {
@@ -43,6 +48,31 @@ const Teleportation = () => {
           return <p className="hour-text">{hours}:{minutes}:{seconds}</p>;
         }
       };
+
+      const onItemSelect = (id, name, price, image) => {
+        console.log(id,name,price,image);
+        setDialog1(true)
+      }
+
+      const onOption1Change = (event) => {
+          console.log(event.target.value);
+          const value = event.target.value
+          setOption1(value)
+          if(value === options[0]) {
+              setOption2(options[1])
+          } else {
+              setOption2(options[0])
+          }
+      }
+      const onOption2Change = event => {
+        const value = event.target.value
+        setOption2(value)
+        if(value === options[0]) {
+            setOption1(options[1])
+        } else {
+            setOption1(options[0])
+        }
+      }
 
     return (
         <div className="col-12 top-108">
@@ -59,53 +89,54 @@ const Teleportation = () => {
             <div className='teleport-bg padding-12 top-60'>
                  <div className="d-flex flex-row centered">
                     <h3 className='heading-white-poppins centered'>{`Tutankhamun’s Gate is Open`}</h3>
-                    <button 
+                    {/* <button 
                             onClick={()=>setDialog1(true)} 
-                            className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-10 height-48 text-black'>이동 가능한 아이템 </button>
+                            className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-10 height-48 text-black left-60'>Start</button> */}
 
                 </div>
                 <div className='top-48'>
-                    <div className='d-flex flex-row centered centered top-60'
-                    >
-                        {/* <div className='col-4 centered '> */}
+                    <div className='d-flex flex-row justify-center top-60'>
+                        <div className="d-flex flex-column align-start">
                             <div 
-                                className="d-flex flex-column centered padding-vertical-48 padding-horizontal-60 radius-20"
+                                className="d-flex flex-column centered  padding-vertical-48 padding-horizontal-60 radius-20"
                                 style={{backgroundColor: '#1F2326'}}
                             >
                                 <Game1Icon />
                                 <select 
-                                    className="transparent-bg stat-input font-size-18 white-bg text-black radius-5 top-16 padding-horizontal-60"
+                                    className="transparent-bg stat-input font-size-18 white-bg text-black radius-5 top-16 padding-horizontal-60 padding-vertical-8"
+                                    onChange={onOption1Change}
+                                    value={option1}
                                 >
-                                    <option>Game 1</option>
-                                    <option>Game 2</option>
+                                    <option value="Game 1">Game 1</option>
+                                    <option value="Game 2">Game 2</option>
                                 </select>
                             </div>
-                        {/* </div> */}
-                        <div className='d-flex flex-row left-60 right-60'>
-                            <Arrow />
-                            {/* <div className='d-flex flex-column centered'>
-                                <p className='clock-text'>Time left</p>
-                                <Countdown
-                                    date={Date.now() + 50000}
-                                    renderer={renderer} />
-                            </div> */}
+                            <div className="padding-8"/>
                         </div>
-                        <div 
-                                className="d-flex flex-column centered padding-vertical-48 padding-horizontal-60 radius-20"
-                                style={{backgroundColor: '#1F2326'}}
-                            >
+                        <div className='d-flex flex-row left-60 right-60 centered'>
+                            <Arrow />
+                        </div>
+                        <div className="d-flex flex-column centered">
+                            <div 
+                                    className="d-flex flex-column centered padding-vertical-48 padding-horizontal-60 radius-20"
+                                    style={{backgroundColor: '#1F2326'}}
+                                >
                                 <Game2Icon />
                                 <select 
-                                    className="transparent-bg stat-input font-size-18 white-bg text-black radius-5 top-16 padding-horizontal-60"
+                                    className="transparent-bg stat-input font-size-18 white-bg text-black radius-5 top-16 padding-horizontal-60 padding-vertical-8"
+                                    onChange={onOption2Change}
+                                    value={option2}
                                 >
-                                    <option>Game 1</option>
-                                    <option>Game 2</option>
+                                    <option value="Game 1">Game 1</option>
+                                    <option value="Game 2">Game 2</option>
                                 </select>
-                            </div>  
+                            </div> 
+                        <p className="padding-8" style={{color:"#45C067"}}>능력치 증가 비율 5배</p>
+                        </div>
                     </div>
                     <div className="">
                         <button 
-                            onClick={()=>setDialog1(true)} 
+                            onClick={()=>{}} 
                             className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-10 height-48 top-48 text-black'>이동 가능한 아이템 </button>
                     </div>
                 </div>
@@ -118,12 +149,13 @@ const Teleportation = () => {
                             key={idx}
                             className="col-4 top-16"
                         >
-                            <NFTSlider
+                            <NFTTeleport
                                 name={weapon.name}
                                 id={weapon.id}
                                 img={weapon.image}
                                 price={weapon.price}
                                 buyWeapon={()=>{}}
+                                onItemSelect={onItemSelect}
                             />
                         </div>
                     ))
@@ -133,7 +165,7 @@ const Teleportation = () => {
 
             {dialog1 ? (
                 <Modal show={dialog1}
-                className="teleport-modal top-108">
+                className="teleport-modal top-60">
                     <ModalBody className="max-width purchase-modal-bg centered nft-bg "
                     >
                         <div className='padding-horizontal-48 max-width'>

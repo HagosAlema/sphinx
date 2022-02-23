@@ -182,19 +182,21 @@ const Trade = () => {
         reader.readAsArrayBuffer(file)
         reader.onloadend = () => {
             console.log('Buffer Data:', Buffer(reader.result));
+            console.log(file)
             const buffer = Buffer(reader.result)
             setImageBuffer(Buffer(buffer))
             const formData = new FormData()
             const stat = {
                 type: 'Knife',
                 price: 230,
-                name: 'Black Knife'
+                name: 'Black Knife',
+                img: 'img'
             }
-            formData.append("image",file)
+            formData.append("img",buffer)
             formData.append("game", "game1")
-            formData.append("stat", stat)
+            // formData.append("stat", stat)
 
-            axios.post('http://localhost:3030/mintGameNFT',formData).then(result=>{
+            axios.post('http://localhost:3030/mintGameNFT',formData, {headers:{ 'Content-Type': 'multipart/form-data' }}).then(result=>{
                 console.log(result)
             }).catch(e=>{
                 console.log(e)

@@ -105,6 +105,13 @@
     -webkit-text-fill-color: transparent;
   }
 
+  .nft-power-text {
+    background: linear-gradient(180deg, #45C067 7.5%, #77FF7C 53.75%, #45C067 100%);
+    -webkit-background-clip: text;
+    // background-clip: content-box;
+    -webkit-text-fill-color: transparent;
+  }
+
 .heading-white-poppins {
     font-family: 'Poppins';
     font-style: normal;

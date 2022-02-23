@@ -77,12 +77,13 @@ const MyPage = () => {
     return (
         <div className="row top-108" style={{height:'auto'}}>
             <Image fluid={false} src={banner} />
-            <div className="d-flex flex-column centered white-b" style={{marginTop: -100}}>
+            <div className="d-flex flex-column centered" style={{marginTop: -100}}>
                 <Image 
                     className="height-200 width-200 centered gradient-bg padding-4"
                     fluid={true} 
                     roundedCircle={true} 
                     src={user}
+                    style={{backgroundColor: '#FFFFFF'}}
                     />
                 <p className="p1 text-white top-8">UNDEFINED</p>
                 <p className="p1 text-white top-8">Wallet Address: {walletAddress}</p>
