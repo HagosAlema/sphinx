@@ -41,8 +41,8 @@ const NFTSlider = ({id, name, img, price, buyWeapon})=>{
         <div className='padding-horizontal-36' >
             <div className='weapon-box-bg'>
                 
-                <div className='nft-square-bg padding-16 height-138 d-flex flex-column justify-content-between'>
-                    <p className='nft-name'>{name}</p>
+                <div className='nft-square-bg padding-horizontal-16 padding-vertical-8 16 d-flex flex-column justify-content-between'>
+                    <p className='nft-name bottom-16'>{name}</p>
                     <div className="d-flex flex-row justify-content-between">
                         <p className="p2">Riffle</p>
                         <p className="p1">Legendary</p>
@@ -91,7 +91,7 @@ const NFTSlider = ({id, name, img, price, buyWeapon})=>{
                         ))}
                     </div>
                     
-                    <div className='nft-bottom-bg top-24'>
+                    <div className='d-flex flex-row nft-bottom-bg top-24'>
                     </div>
                 </div>
                 }

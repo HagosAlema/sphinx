@@ -41,7 +41,7 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
         <div className='padding-horizontal-36' >
             <div className='weapon-box-bg'>
                 
-                <div className='nft-square-bg padding-16 d-flex flex-column justify-content-around'>
+                <div className='nft-square-bg padding-horizontal-16 padding-vertical-8 d-flex flex-column justify-content-around'>
                     <p className='nft-name bottom-16'>{name}</p>
                     <div className="d-flex flex-row justify-content-between">
                         <p className="p2">Riffle</p>

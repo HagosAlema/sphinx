@@ -10,7 +10,7 @@ const NFT = ({id, name, img, price, buyWeapon})=>{
         console.log(id,name,price);
     }
     return (
-        <div className='nft-bg padding-24 padding-horizontal-48' >
+        <div className='nft-bg padding-16 padding-horizontal-24' >
             <div className='weapon-box-bg'>
                 <div className='nft-square-bg padding-16 height-138 d-flex flex-column justify-content-between'>
                     <p className='nft-name'>{name}</p>
