@@ -91,7 +91,7 @@ const NFTSlider = ({id, name, img, price, buyWeapon})=>{
                         ))}
                     </div>
                     
-                    <div className='nft-bottom-bg height-82 top-24'>
+                    <div className='nft-bottom-bg top-24'>
                     </div>
                 </div>
                 }

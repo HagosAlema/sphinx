@@ -52,8 +52,9 @@
 
 .nft-top-bg {
     background-image: url('../assets/images/nft_bg.png');
-    background-size: contain;
+    background-size: 100% 100%;
     background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .stat-input {
@@ -65,13 +66,15 @@
 }
 .nft-square-bg {
   background-image: url('../assets/images/nft_square_bg.png');
-  background-size: contain;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
+  background-position: center center;
 }
 .nft-bottom-bg {
     background-image: url(../assets/images/weapon-bottom-bg.svg);
-    background-size: contain;
+    background-size: 100%;
     background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .teleport-bg {
