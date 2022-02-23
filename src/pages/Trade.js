@@ -20,10 +20,11 @@ import {ReactComponent as Expand} from '../assets/images/svg/expand.svg'
 import {ReactComponent as Collapse} from '../assets/images/svg/shrink.svg'
 import {ReactComponent as Confirm} from '../assets/images/svg/confirmed.svg'
 import {ReactComponent as UploadIcon} from '../assets/images/svg/upload.svg'
-import { borderColor } from '@mui/system';
 
 import web3 from '../web3';
 import axios from 'axios';
+import { accountAtom } from '../atoms/state';
+import { useRecoilValue } from 'recoil';
 
 const menus = [
     { name: 'Game-Art', value: '1' },
@@ -69,6 +70,7 @@ const Trade = () => {
     const [itemPrice, setItemPrice] = useState(0)
     const [itemImage, setItemImage] = useState(null)
     const [imageBuff, setImageBuffer] = useState(null)
+    const accountAddress = useRecoilValue(accountAtom)
 
     const handleSliderChange = (event, newValue) => {
         setSliderValue(newValue)
@@ -184,20 +186,15 @@ const Trade = () => {
             console.log('Buffer Data:', Buffer(reader.result));
             console.log(file)
             const buffer = Buffer(reader.result)
-            setImageBuffer(Buffer(buffer))
+            setImageBuffer(buffer)
             const formData = new FormData()
-            const stat = {
-                type: 'Knife',
-                price: 230,
-                name: 'Black Knife',
-                img: 'img'
-            }
-            formData.append("img",buffer)
-            formData.append("game", "game1")
+            formData.append("img",file)
+            formData.append("name", "game 1")
+            formData.append('public_key', accountAddress)
             // formData.append("stat", stat)
 
-            axios.post('http://localhost:3030/mintGameNFT',formData, {headers:{ 'Content-Type': 'multipart/form-data' }}).then(result=>{
-                console.log(result)
+            axios.post('http://localhost:3030/mintDesignNFT',formData, {headers:{ 'Content-Type': 'multipart/form-data' }}).then(result=>{
+                console.log('',result.data)
             }).catch(e=>{
                 console.log(e)
             })
