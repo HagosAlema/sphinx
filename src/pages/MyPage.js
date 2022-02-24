@@ -36,7 +36,7 @@ const weapons = [
 const MyPage = () => {
 
     const walletAddress = useRecoilValue(accountAtom)
-    // const testAccount = "0x658f11bd6ed7a0cfeb426d18ae9b066619ddbecd"
+    const testAccount = "0x658f11bd6ed7a0cfeb426d18ae9b066619ddbecd"
     const [selectedMenu, setSelectedMenu] = useState(1)
     const [items, setItems] = useState([])
 
@@ -47,12 +47,8 @@ const MyPage = () => {
     const game2Nft = []
     const storageNft = []
 
-
-
-    //get Game1 items
-    //fetch nft items
-    useEffect(()=>{
-        const fetchGameItems = (game)=>{
+    useEffect( async()=>{
+        const fetchGameItems = async (game)=>{
             console.log('Loading game items')
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
@@ -66,27 +62,44 @@ const MyPage = () => {
                 var index = 1;
                 data.forEach((item)=>{
                     const tokenId = item.img_token_id
+                    const statId = item.stat_token_id
                     console.log(tokenId)
                     nft.methods.getUri(tokenId).call().then(res=>{
-                        console.log(res);
+
                         fetch(res)
                             .then(response => response.json())
                             .then(json => {
                                 nft.methods.getNFTValue(tokenId).call().then(value=>{
-                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
-                                    index++;
-                                    itemList.push(nftItem)
+                                    //get stat info
+                                    nft.methods.getUri(statId).call().then((statUri)=>{
+                                        fetch(statUri)
+                                            .then(statData => statData.json())
+                                            .then(statJson=> {
 
-                                    if(game==='game1'){
-                                        console.log('Game 1 added')
-                                        game1Nft.push(nftItem)
-                                        setItems([...itemList], nftItem)
-                                        setGame1Items([...itemList],nftItem)
-                                    } else {
-                                        console.log('Game 2 added')
-                                        game2Nft.push(nftItem)
-                                        setGame1Items([...itemList], nftItem)
-                                    }
+                                                    fetch(statJson.url)
+                                                    .then(statUrl=>statUrl.json())
+                                                    .then(itemPower=>{
+
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                        index++;
+                                                        itemList.push(nftItem)
+
+                                                        if(game==='game1'){
+
+                                                            game1Nft.push(nftItem)
+                                                            setItems([...itemList], nftItem)
+                                                            setGame1Items([...itemList],nftItem)
+                                                        } else {
+
+                                                            game2Nft.push(nftItem)
+                                                            setGame1Items([...itemList], nftItem)
+                                                        }
+                                                    })
+                                                
+                                            })
+                                        
+                                    })
+                                    
                                 })
                             }).catch(er=>{
                                 console.log("ERROR==>"+er)
@@ -105,40 +118,57 @@ const MyPage = () => {
     //Get storage items
     useEffect(()=>{
         var itemList = []
-            axios.get('http://localhost:3030/getImgInfo', {
-                params: {
-                    public_key: walletAddress,
-                }
-            }).then((result)=>{
+        axios.get('http://localhost:3030/getImgInfo', {
+            params: {
+                public_key: walletAddress
+            }
+        }).then((result)=>{
+            const data = result.data
 
-                const data = result.data
-                console.log((result.data));
-                var index = 1;
-                data.forEach((item)=>{
-                    const tokenId = item.img_token_id
-                    console.log(tokenId)
-                    nft.methods.getUri(tokenId).call().then(res=>{
-                        console.log(res)
-                        fetch(res)
-                            .then(response => response.json())
-                            .then(json => {
-                                console.log(json)
-                                nft.methods.getNFTValue(tokenId).call().then(value=>{
-                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
-                                    index++;
-                                    itemList.push(nftItem)
-                                    storageNft.push(nftItem)
-                                    setStorageItems([...itemList],nftItem)
+            var index = 1;
+            data.forEach((item)=>{
+                const tokenId = item.img_token_id
+                const statId = item.stat_token_id
+
+                nft.methods.getUri(tokenId).call().then(res=>{
+
+                    fetch(res)
+                        .then(response => response.json())
+                        .then(json => {
+                            nft.methods.getNFTValue(tokenId).call().then(value=>{
+                                //get stat info
+                                nft.methods.getUri(statId).call().then((statUri)=>{
+                                    fetch(statUri)
+                                        .then(statData => statData.json())
+                                        .then(statJson=> {
+
+                                                fetch(statJson.url)
+                                                .then(statUrl=>statUrl.json())
+                                                .then(itemPower=>{
+
+                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                    index++;
+                                                    itemList.push(nftItem)
+                                                    storageNft.push(nftItem)
+                                                    // setItems([...itemList], nftItem)
+                                                    setStorageItems([...itemList],nftItem)
+                                                })
+                                            
+                                        })
+                                    
                                 })
-                            }).catch(er=>{
-                                console.log("ERROR==>"+er)
+                                
                             })
-                    })
+                        }).catch(er=>{
+                            console.log("ERROR==>"+er)
+                        })
                 })
-                // setItems(itemList)
-            }).catch(e=>{
-                console.log(e);
             })
+            // setItems(itemList)
+        }).catch(e=>{
+            // console.log(e);
+        })
+
     },[])
 
     const onMenuChange = (menu) => {
@@ -201,6 +231,7 @@ const MyPage = () => {
                                 img={weapon.image}
                                 price={weapon.price}
                                 buyWeapon={()=>{}}
+                                power={weapon.power}
                             />
                         </div>
                     ))
