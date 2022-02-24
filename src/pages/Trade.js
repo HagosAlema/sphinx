@@ -75,6 +75,7 @@ const Trade = () => {
     const [itemImage, setItemImage] = useState(null) //URI
     const [imageBuff, setImageBuffer] = useState(null) //Buffer
     const [jsonAddress, setJsonAddress] = useState('');
+    
 
     //Market Items
     const [items, setItems] = useState([])
@@ -137,7 +138,7 @@ const Trade = () => {
             var index = 1;
             data.forEach((item)=>{
                 const tokenId = item.token_id
-
+                console.log(item)
                 nft.methods.getUri(tokenId).call().then(result=>{
 
                     fetch(result)
@@ -437,7 +438,7 @@ const Trade = () => {
                             <select value={itemType}
                             onChange={handleTypeChange}
                             className="transparent-bg stat-input font-size-18">
-                                <option selected value="Knife">Knife</option>
+                                <option value="Knife">Knife</option>
                                 <option value="Gun">Gun</option>
                                 <option value="Hair">Hair</option>
                                 <option value="Cloth">Cloth</option>
@@ -583,7 +584,7 @@ const Trade = () => {
                     <div className='gradient-bg padding-horizontal-1 padding-vertical-1 top-20 radius-10'>
                         {/* <div className='black-bg-20 radius-10 top-1 right-1 max-width centered'> */}
                             <FormSelect className='height-40 black-bg-20 radius-10 centered'>
-                                <option selected value="USD" className='option-text centered'>US Dollar</option>
+                                <option  value="USD" className='option-text centered'>US Dollar</option>
                                 <option value="BIT" className='option-text centered'>Bitcoin</option>
                                 <option value="ETH" className='option-text'>Eth</option>
                                 <option value="CHURR" className='option-text'>Churr</option>

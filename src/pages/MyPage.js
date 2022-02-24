@@ -14,6 +14,7 @@ import weapon5 from '../assets/images/eye_weapon.png';
 import weapon6 from '../assets/images/kal_weapon.png';
 import NFTSlider from "../components/NFTSlider";
 import axios from "axios";
+import nft from "../contracts/nft";
 
 const menus = [
     {id: 1, name: 'Game1 Items'},
@@ -35,57 +36,124 @@ const weapons = [
 const MyPage = () => {
 
     const walletAddress = useRecoilValue(accountAtom)
+    const testAccount = "0x658f11bd6ed7a0cfeb426d18ae9b066619ddbecd"
     const [selectedMenu, setSelectedMenu] = useState(1)
     const [items, setItems] = useState([])
 
+    const [game1Items, setGame1Items] = useState([])
+    const [game2Items, setGame2Items] = useState([])
+    const [storageItems, setStorageItems] = useState([])
+    const game1Nft = []
+    const game2Nft = []
+    const storageNft = []
+
+
+
+    //get Game1 items
+    //fetch nft items
+    useEffect(()=>{
+        const fetchGameItems = (game)=>{
+            console.log('Loading game items')
+            var itemList = []
+            axios.get('http://localhost:3030/getItemInfo', {
+                params: {
+                    public_key: testAccount,
+                    game: game
+                }
+            }).then((result)=>{
+                const data = result.data
+                console.log((result.data));
+                var index = 1;
+                data.forEach((item)=>{
+                    const tokenId = item.img_token_id
+                    console.log(tokenId)
+                    nft.methods.getUri(tokenId).call().then(res=>{
+                        console.log(res);
+                        fetch(res)
+                            .then(response => response.json())
+                            .then(json => {
+                                nft.methods.getNFTValue(tokenId).call().then(value=>{
+                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
+                                    index++;
+                                    itemList.push(nftItem)
+
+                                    if(game==='game1'){
+                                        console.log('Game 1 added')
+                                        game1Nft.push(nftItem)
+                                        setItems([...itemList], nftItem)
+                                        setGame1Items([...itemList],nftItem)
+                                    } else {
+                                        console.log('Game 2 added')
+                                        game2Nft.push(nftItem)
+                                        setGame1Items([...itemList], nftItem)
+                                    }
+                                })
+                            }).catch(er=>{
+                                console.log("ERROR==>"+er)
+                            })
+                    })
+                })
+                // setItems(itemList)
+            }).catch(e=>{
+                // console.log(e);
+            })
+        }
+        fetchGameItems('game1')
+        fetchGameItems('game2')
+    },[])
+
+    //Get storage items
+    useEffect(()=>{
+        var itemList = []
+            axios.get('http://localhost:3030/getImgInfo', {
+                params: {
+                    public_key: testAccount,
+                }
+            }).then((result)=>{
+
+                const data = result.data
+                console.log((result.data));
+                var index = 1;
+                data.forEach((item)=>{
+                    const tokenId = item.img_token_id
+                    console.log(tokenId)
+                    nft.methods.getUri(tokenId).call().then(res=>{
+                        console.log(res)
+                        fetch(res)
+                            .then(response => response.json())
+                            .then(json => {
+                                console.log(json)
+                                nft.methods.getNFTValue(tokenId).call().then(value=>{
+                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
+                                    index++;
+                                    itemList.push(nftItem)
+                                    storageNft.push(nftItem)
+                                    setStorageItems([...itemList],nftItem)
+                                })
+                            }).catch(er=>{
+                                console.log("ERROR==>"+er)
+                            })
+                    })
+                })
+                // setItems(itemList)
+            }).catch(e=>{
+                console.log(e);
+            })
+    },[])
+
     const onMenuChange = (menu) => {
+        console.log(game1Items, game2Items, storageItems)
         const {id, name} = menu;
         setSelectedMenu(id)
         if(id===1){
-            var itemArr = [
-                weapons[0],
-                weapons[1],
-                weapons[2]
-            ]
-            setItems(itemArr)
+            setItems(game1Items)
+            // console.log(game1Nft);
         } else if(id === 2) {
-            var itemArr = [
-                weapons[2],
-                weapons[3],
-                weapons[4]
-            ]
-            setItems(itemArr)
+            setItems(game2Items)
         } else {
-            var itemArr = [
-                weapons[3],
-                weapons[4],
-                weapons[5]
-            ]
-            setItems(itemArr)
+            setItems(storageItems)
         }
     }
-
-    useEffect(()=>{
-        var itemArr = [
-            weapons[1],
-            weapons[2],
-            weapons[3]
-        ]
-        setItems(itemArr)
-    },[])
-
-    useEffect(()=>{
-        axios.get('http://localhost:3030/getItemList', {
-            params: {
-                public_key: walletAddress
-            }
-        }).then((result)=>{
-            console.log(result);
-        }).catch(e=>{
-            console.log(e);
-        })
-    },[])
-
 
     return (
         <div className="row top-108" style={{height:'auto'}}>
