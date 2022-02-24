@@ -107,7 +107,6 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect, hidePrice, 
                         key={id}
                         className={selectedIcon === id ?"link white-bg width-16 height-16 radius-8 right-4 left-4 border-1": "link transparent-bg width-8 height-8 radius-4 right-4 left-4 border-1"}
                         onClick={()=>{
-                            console.log(id, icon.id)
                             setSelectedIcon(icon.id)
                         }}
                         ></div>
@@ -115,7 +114,7 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect, hidePrice, 
             }
             </div>
             <div className="d-flex centered top-16">
-                <button onClick={()=>onItemSelect(id, name, price, img)} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>선택하기</button>
+                <button onClick={()=>onItemSelect(id, name, price, img, power)} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>선택하기</button>
             </div>
 
         </div>

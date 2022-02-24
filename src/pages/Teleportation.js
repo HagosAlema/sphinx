@@ -44,6 +44,7 @@ const Teleportation = () => {
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
                     public_key: testAccount,
+                    // public_key:accountAddress,
                     game: option1
                 }
             }).then((result)=>{
@@ -68,7 +69,7 @@ const Teleportation = () => {
                                                     .then(statUrl=>statUrl.json())
                                                     .then(itemPower=>{
 
-                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower, stat_Id: statId, tokenId:tokenId}
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: tokenId, image: json.url, price: value, power: itemPower, stat_Id: statId, tokenId:tokenId}
                                                         index++;
                                                         itemList.push(nftItem)
                                                         setWeapons([...itemList],nftItem)
@@ -99,6 +100,25 @@ const Teleportation = () => {
         
     },[option1])
 
+    const doTeleportation = (event) => {
+        console.log("doteleportation start",changeItem, option1, option2 ,changeItem.id)
+        axios.get('http://localhost:3030/changeItemGame', {
+            params:{
+                img_token_id: changeItem.id,
+                newGame: option2,
+                oldGame: option1,
+                modified_stat: changeItem.power*ratio_game,
+            }
+        }).then((result)=>{
+            console.log("changeitem",result)
+            setDialog2(false)
+            setDialog3(true)
+        }).catch((e)=>{
+            // setShowSpinner(false)
+        })
+        
+      }
+
     const renderer = ({ hours, minutes, seconds, completed }) => {
         if (completed) {
           // Render a completed state
@@ -109,9 +129,13 @@ const Teleportation = () => {
         }
       };
 
-      const onItemSelect = (id, name, price, image,) => {
+      const onItemSelect = (id, name, price, image, power) => {
+        // const ChangeItem={power: power, id: id}
+        const ChangeItem={name:name, img:image, id:id, power:power, hidePrice:true}
+        setChangeItem(ChangeItem)
 
-    
+
+        console.log("select onitemselect ",id, name, power);
         setDialog1(true)
       }
 
@@ -256,13 +280,13 @@ const Teleportation = () => {
                             
                             <div className='row'>
                                 <div className='col-4'>
-                                    <NFTSlider name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id} power={weapons[0].power} hidePrice={true}/>
+                                    <NFTSlider name={changeItem.name} price={changeItem.price} img={changeItem.image} id={weapons[0].id} power={changeItem.power} hidePrice={true}/>
                                 </div>
                                 <div className="col-4 centered">
                                     <Arrow />
                                 </div>
                                 <div className='col-4'>
-                                    <NFTSlider name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id} power={weapons[0].power*ratio_game} hidePrice={true}/>
+                                    <NFTSlider name={changeItem.name} price={changeItem.price} img={changeItem.image} id={changeItem.id} power={changeItem.power*ratio_game} hidePrice={true}/>
                                 </div>
                             </div>
                             <div className="d-flex flex-row centered padding-vertical-48">
@@ -282,18 +306,17 @@ const Teleportation = () => {
             {dialog2 ? (
                 <Modal show={dialog2}  className="top-48 centered radius-16">
                     <Modal.Body className="purchase-modal-bg max-width radius-16">
-                        <h2 className='text-white centered top-16'>Design Transform</h2>
+                        <h2 className='text-white centered top-16'>Tutankhamun's teleportation</h2>
                         <div className='max-width top-16 bottom-32' style={{backgroundColor: '#2D2E36', height: 1}}></div>
                         {/* <div className='centered padding-vertical-72 top-32 bottom-12'><p className='purchase-nft-body '>정말로 구매 하시겠습니까?</p></div> */}
                         <div className='centered d-flex flex-column'>
                             {/* <Confirm/> */}
-                            <p className='purchase-nft-body top-8'>정말로 weapon을 <br/>{option1}에서 {option2}로 이동하시겠습니까?</p>
+                            <p className='purchase-nft-body top-8'>정말로 {changeItem.name}을 <br/>{option1}에서 {option2}로 이동하시겠습니까?</p>
                         </div>
                         
                         <div className='d-flex flex-row centered top-72 bottom-32'>
                             <button onClick={()=>{
-                                setDialog2(false)
-                                setDialog3(true)
+                                doTeleportation()
                                 }} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>확인 </button>
                             <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setDialog2(false)}}>
                                 <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
