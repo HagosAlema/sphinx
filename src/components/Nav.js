@@ -6,6 +6,7 @@ import { accountAtom, balance } from "../atoms/state";
 import {Button} from 'react-bootstrap';
 import Connect from "../pages/Connect";
 import nft from "../contracts/nft";
+import token from "../contracts/token";
 const {ethereum} = window
 
 const Nav = () => {
@@ -46,7 +47,7 @@ const Nav = () => {
             setSelectedAddress(ethereum.selectedAddress)
             console.log("account", ethereum.selectedAddress);
             const getAccountBalance = async () =>{
-                var b = await nft.methods.balanceOf(ethereum.selectedAddress).call();
+                var b = await token.methods.balanceOf(ethereum.selectedAddress).call();
                 console.log(b);
                 setAccountBalance(b)
             }

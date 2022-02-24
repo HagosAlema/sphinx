@@ -13,6 +13,11 @@ import {ReactComponent as Arrow} from '../assets/images/svg/vertical_arrow.svg'
 import {ReactComponent as ETH} from '../assets/images/svg/eth_icon.svg'
 import {ReactComponent as CHURR} from '../assets/images/svg/churr.svg'
 import {ReactComponent as Confirm} from '../assets/images/svg/confirmed.svg'
+import { useSetRecoilState } from "recoil";
+import { accountAtom, balance, walletKindAtom } from '../atoms/state';
+import token from '../contracts/token.js';
+const {ethereum} = window
+
 const Home = () => {
     const navigate = useNavigate()
     const [showDialog, setShowDialog] = useState(false)
@@ -20,6 +25,10 @@ const Home = () => {
     const [showCheck, setCheck] = useState(false)
     const [wei, setWei]=useState(0)
     const [churr, setChurr] = useState(0)
+    const [address, setAddress] = useState(ethereum.selectedAddress)
+    const setSelectedAddress = useSetRecoilState(accountAtom)
+    const setAccountBalance = useSetRecoilState(balance)
+
 
     const onWieChange = (event) => {
         setWei(event.target.value)
@@ -31,7 +40,28 @@ const Home = () => {
         setWei(event.target.value)
     }
 
-    
+    const buyToken = async() => {
+        let tokenAmount = document.getElementById("churr_value").value;
+        console.log(tokenAmount);
+
+        if(window.ethereum !== 'undefined'){
+            setAddress(ethereum.selectedAddress)
+            setSelectedAddress(ethereum.selectedAddress)
+            console.log("account", ethereum.selectedAddress);
+
+            token.methods.buy().send({from: ethereum.selectedAddress, gas:3000000,value: tokenAmount})
+            .once('sending', (payload) => { console.log(payload);})
+            .on('error', function(error){ console.error(error) })
+            .then(function(receipt){
+                console.log(receipt);
+                console.log("b result:",receipt.events.Transfer.returnValues[2]);
+                setConfirm(false)
+                setCheck(true)
+            });
+        }
+        
+    }
+
     return (
         <div className='col-12 top-80'>
             <div className='row'>
@@ -103,7 +133,7 @@ const Home = () => {
                                             style={{flexGrow: 1, backgroundColor: '#8C8C8C', height: 80}}
                                         >
                                             <p style={{textAlign: 'right', backgroundColor: 'transparent', border: 0, color: 'white', fontFamily:'poppins', fontSize: '1.5rem', fontWeight:'bold'}}>CHURR</p>
-                                            <input value={churr} type="number" style={{textAlign: 'right', backgroundColor: 'transparent', border: 0, color: 'white', fontFamily:'poppins', fontSize: '1.5rem', fontWeight:'bold', marginRight: 8, outline: 'none', flexGrow: 1}} onChange={onChurrChange}/>
+                                            <input id="churr_value" value={churr} type="number" style={{textAlign: 'right', backgroundColor: 'transparent', border: 0, color: 'white', fontFamily:'poppins', fontSize: '1.5rem', fontWeight:'bold', marginRight: 8, outline: 'none', flexGrow: 1}} onChange={onChurrChange}/>
 
                                         </div>
                                     </div>
@@ -135,8 +165,7 @@ const Home = () => {
                         
                         <div className='d-flex flex-row centered top-72 bottom-32'>
                             <button onClick={()=>{
-                                setConfirm(false)
-                                setCheck(true)
+                                buyToken()
                                 }} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>확인 </button>
                             <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setConfirm(false)}}>
                                 <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
