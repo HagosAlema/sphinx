@@ -1,7 +1,7 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom'
 // import {useNavigate} from 'react-router-dom';
-import {ButtonGroup, ToggleButton, FormControl, FormSelect, Modal, Image} from 'react-bootstrap';
+import {ButtonGroup, ToggleButton, FormControl, FormSelect, Modal, Image, Spinner} from 'react-bootstrap';
 import {Slider, TextField} from '@mui/material'
 
 import NFT from '../components/NFT';
@@ -25,6 +25,8 @@ import web3 from '../web3';
 import axios from 'axios';
 import { accountAtom } from '../atoms/state';
 import { useRecoilValue } from 'recoil';
+import nft from '../contracts/nft';
+
 
 const menus = [
     { name: 'Game-Art', value: '1' },
@@ -64,12 +66,20 @@ const Trade = () => {
     const [nftPrice, setNftPrice] = useState(0)
     const [nftImage, setNftImage] = useState(null)
     const [uploadDialog, setUploadDialog] = useState(false)
-    const [localImage, setLocalImage] = useState(null)
+    const [showSpinner, setShowSpinner] = useState(false)
+
+    const [localImage, setLocalImage] = useState(null) //File
     const [itemName, setItemName]=useState('')
     const [itemType, setItemType] = useState('')
     const [itemPrice, setItemPrice] = useState(0)
-    const [itemImage, setItemImage] = useState(null)
-    const [imageBuff, setImageBuffer] = useState(null)
+    const [itemImage, setItemImage] = useState(null) //URI
+    const [imageBuff, setImageBuffer] = useState(null) //Buffer
+    const [jsonAddress, setJsonAddress] = useState('');
+
+    //Market Items
+    const [items, setItems] = useState([])
+    const [uploadComplete, setUploadComplete] = useState(false)
+
     const accountAddress = useRecoilValue(accountAtom)
 
     const handleSliderChange = (event, newValue) => {
@@ -95,6 +105,47 @@ const Trade = () => {
         setShowConfirm(true)
     }
 
+
+
+    //fetch nft items
+    useEffect(()=>{
+        var itemList = []
+        axios.get('http://localhost:3030/getItemList', {
+            params: {
+                public_key: accountAddress
+            }
+        }).then((result)=>{
+
+            const data = result.data
+            // setItems(result.data)
+            var index = 1;
+            data.forEach((item)=>{
+                const tokenId = item.token_id
+
+                nft.methods.getUri(tokenId).call().then(result=>{
+
+                    fetch(result)
+                        .then(response => response.json())
+                        .then(json => {
+                            nft.methods.getNFTValue(tokenId).call().then(value=>{
+                                const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
+                                index++;
+                                itemList.push(nftItem)
+                                setItems([...itemList],nftItem)
+
+                            })
+                        }).catch(er=>{
+                            console.log("ERROR==>"+er)
+                        })
+                })
+                index++;
+            })
+            // setItems(itemList)
+        }).catch(e=>{
+            console.log(e);
+        })
+    },[uploadComplete])
+
     const NFT1 = ({id, name, img, price})=>{
         return (
             <div className='padding-horizontal-48 top-16' >
@@ -105,7 +156,7 @@ const Trade = () => {
                     <div className='centered weapon-bg top-8 right-8 left-8'>
                         <div className='col-12 centered '>
                             <div className='col-12 top-10 bottom-10 img-fluid centered padding-16'>
-                                <Image src={nftImage} alt="NFT" fluid={true} className='img-fluid' responsive/>
+                                <Image src={nftImage} alt="NFT" fluid={true} className='img-fluid'/>
                             </div>
                         </div>
                     </div>
@@ -127,7 +178,7 @@ const Trade = () => {
                     <div className='centered weapon-bg top-8 right-8 left-8'>
                         <div className='col-12 centered '>
                             <div className='col-12 top-10 bottom-10 img-fluid centered padding-16'>
-                                <Image src={itemImage} alt="NFT" fluid={true} className='img-fluid' responsive/>
+                                <Image src={itemImage} alt="NFT" fluid={true} className='img-fluid' />
                             </div>
                         </div>
                     </div>
@@ -149,7 +200,7 @@ const Trade = () => {
                     <div className='centered weapon-bg top-8 right-8 left-8'>
                         <div className='col-12 centered '>
                             <div className='col-12 img-fluid centered'>
-                                {/* <Image src={nftImage} alt="NFT" fluid={true} className='img-fluid' responsive/> */}
+                                {/* <Image src={nftImage} alt="NFT" fluid={true} className='img-fluid' /> */}
                                 <Image src={URL.createObjectURL(localImage)} 
                                     className="padding-horizontal-48" 
                                     style={{width: '100%'}}/>
@@ -187,23 +238,79 @@ const Trade = () => {
             console.log(file)
             const buffer = Buffer(reader.result)
             setImageBuffer(buffer)
-            const formData = new FormData()
-            formData.append("img",file)
-            formData.append("name", "game 1")
-            formData.append('public_key', accountAddress)
+            // const formData = new FormData()
+            // formData.append("img",file)
+            // formData.append("name", "game 1")
+            // formData.append('public_key', accountAddress)
             // formData.append("stat", stat)
 
-            axios.post('http://localhost:3030/mintDesignNFT',formData, {headers:{ 'Content-Type': 'multipart/form-data' }}).then(result=>{
-                console.log('',result.data)
-            }).catch(e=>{
-                console.log(e)
-            })
+            // axios.post('http://localhost:3030/mintDesignNFT',formData, {headers:{ 'Content-Type': 'multipart/form-data' }}).then(result=>{
+            //     console.log('',result.data)
+            // }).catch(e=>{
+            //     console.log(e)
+            // })
         }
         setLocalImage(file)
         setItemImage(URL.createObjectURL(file))
         setPreviewImageDialog(true)
         setUploadDialog(false)
         console.log(file)
+    }
+
+    const saveTokenToDatabase = (tokenId) => {
+        console.log('Uploading nft info to database started .... ')
+        axios.get('http://localhost:3030/saveMarketTokenId', {
+            params:{
+                token_id: tokenId,
+                public_key: accountAddress,
+                name: itemName
+            }
+        }).then((result)=>{
+            console.log(result)
+            setWeaponPreview(false)
+            setUploadConfirm(true)
+            setShowSpinner(false)
+            setUploadComplete(!uploadComplete)
+        }).catch((e)=>{
+            setShowSpinner(false)
+        })
+    }
+
+    const uploadToBlockChain = (jsonAddr) => {
+        setShowSpinner(true)
+        console.log(jsonAddr, accountAddress);
+        nft.methods.registerNFTToMarket(jsonAddr, itemPrice).send({from: accountAddress, gas:3000000})
+        .once('sending', (payload) => { console.log(payload);})
+        .on('error', (error)=>{ console.error(error) })
+        .then((receipt)=>{
+            console.log(receipt);
+            console.log("registerNFT result:",receipt.events.Transfer.returnValues[2]);
+            const tokenId = receipt.events.Transfer.returnValues[2]
+            saveTokenToDatabase(tokenId)
+        }).catch(e=>{
+            setShowSpinner(false)
+            console.log("error", e);
+        });
+    }
+    const uploadNFT = () => {
+        console.log('Uploading nft started ... ')
+        if(localImage !== null && itemName !==''){
+            const formData = new FormData()
+            formData.append("img",localImage)
+            formData.append("name", itemImage)
+            formData.append('public_key', accountAddress)
+            axios.post('http://localhost:3030/mintDesignNFT',formData, {headers:{ 'Content-Type': 'multipart/form-data' }}).then(result=>{
+                setJsonAddress(result.data.attr_img_url)    
+                console.log('attribute',result.data.attr_img_url)
+                uploadToBlockChain(result.data.attr_img_url)
+            }).catch(e=>{
+                console.log("ERROR",e)
+            })
+            
+        } else {
+            console.log('Please fill all required fields')
+        }
+        
     }
 
     const handleTypeChange = (event) => {
@@ -223,8 +330,7 @@ const Trade = () => {
     
     return(
         <div className='row top-108'>
-            {
-                uploadDialog ? (
+
                     <Modal show={uploadDialog} className="top-48 centered radius-16" >
                         <Modal.Body
                             className="purchase-modal-bg max-width radius-16" 
@@ -255,8 +361,8 @@ const Trade = () => {
                                 </div>
                             </div>
                             <div className='d-flex flex-row centered top-16 bottom-16'>
-                                <button onClick={()=>setUploadDialog(false)} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>올리기 </button>
-                                <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setUploadDialog(false)}}>
+                                {/* <button onClick={()=>setUploadDialog(false)} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>올리기 </button> */}
+                                <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered' onClick={()=>{setUploadDialog(false)}}>
                                     {/* <div className='black-bg-20  text-white centered padding-horizontal-16 height-46'> */}
                                         <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
                                     {/* </div> */}
@@ -265,9 +371,9 @@ const Trade = () => {
                         </Modal.Body>
 
                     </Modal>
-                ): null
-            }
-            {previewImageDialog ? (
+
+
+
                 <Modal show={previewImageDialog}>
                 <Modal.Body
                             className="purchase-modal-bg max-width radius-16" 
@@ -296,8 +402,8 @@ const Trade = () => {
                             </div>
                         </Modal.Body>
                 </Modal>
-            ): null}
-            {statDialog ? (
+            
+            
                 <Modal show={statDialog}>
                     <Modal.Body
                         className="purchase-modal-bg max-width radius-16" 
@@ -323,7 +429,8 @@ const Trade = () => {
                             <div className="d-flex flex-row justify-content-between stat-input top-16">
                                 <input 
                                 onChange={handleItemPrice}
-                                type="number" placeholder="" className="transparent-bg stat-input" style={{border: 'none', width: "60%"}}/>
+                                value={itemPrice}
+                                type="number" placeholder="" className="transparent-bg stat-input" style={{border: 'none', width: "60%", textAlign: 'right', flexGrow: 1, marginRight: 8}}/>
                                 <p >CHURR</p>
                             </div>
 
@@ -331,19 +438,23 @@ const Trade = () => {
                             <p className="font-size-12" style={{color: '#F80000', opacity: .7}}>지금은 LEGENDARY만 설정할 수 있습니다!</p>
                             <div className="d-flex flex-column top-16">
                                 <div className="d-flex flex-row centered">
-                                    <Image src={normal} style={{height:60}} className="right-8"/>
-                                    <Image src={rare} style={{height:60}} className="left-8"/>
+                                    <Image src={normal} style={{height:60, opacity: .2}} className="right-8"/>
+                                    <Image src={rare} style={{height:60, opacity: .2}} className="left-8"/>
                                 </div>
                                 <div className="d-flex flex-row centered top-8">
-                                    <Image src={epic} style={{height:60}} className="right-8"/>
+                                    <Image src={epic} style={{height:60, opacity: .2}} className="right-8"/>
                                     <Image src={legendary} style={{height:60}} className="left-8"/>
                                 </div>
                             </div>
                         </div>
                         <div className='d-flex flex-row centered top-16 bottom-16'>
                             <button onClick={()=>{
-                                setStatDialog(false)
-                                setWeaponPreview(true)
+                                if(localImage !== null && itemName !==''){
+                                    setStatDialog(false)
+                                    setWeaponPreview(true)
+                                } else {
+                                    console.log('Please fill all fields')
+                                }
                             }} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>올리기</button>
                             <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setStatDialog(false)}}>
                                 {/* <div className='black-bg-20  text-white centered padding-horizontal-16 height-46'> */}
@@ -353,21 +464,26 @@ const Trade = () => {
                         </div>
                     </Modal.Body>
                 </Modal>
-            ) : null
-            }
 
-            {weaponPreview ? (
+
                 <Modal show={weaponPreview}  className="top-48 centered radius-16" style={{overflowY: 'scroll'}}>
                     <Modal.Body className="purchase-modal-bg max-width radius-16" style={{overflowY: 'scroll'}}>
                         <h2 className='text-white centered top-16'>Upload NFT</h2>
                         <div className='max-width top-8' style={{backgroundColor: '#2D2E36', height: 1}}></div>
                         <div className='centered padding-vertical-16 bottom-16'><p className='purchase-nft-body '>해당 내용으로 올리시겠습니까?</p></div>
                         <NFT3/>
+                        {showSpinner ? (
+                            <div className="d-flex flex-column centered top-16 bottom-16">
+                                <p className="text-white ">Uplaoding... Please wait ... </p>
+                                <div className="d-flex flex-row centered top-8">
+                                    <Spinner animation="grow" variant="warning" size="sm"  className="right-8"/>
+                                    <Spinner animation="grow" variant="warning"/>
+                                    <Spinner animation="grow" variant="warning" size="sm"  className="left-8"/>
+                                </div>
+                            </div>
+                        ): (
                         <div className='d-flex flex-row centered top-16 bottom-16'>
-                            <button onClick={()=>{
-                                setWeaponPreview(false)
-                                setUploadConfirm(true)
-                            }}
+                            <button onClick={()=>uploadNFT()}
                             className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>올리기 </button>
                             <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setWeaponPreview(false)}}>
                                 {/* <div className='black-bg-20  text-white centered padding-horizontal-16 height-46'> */}
@@ -375,12 +491,14 @@ const Trade = () => {
                                 {/* </div> */}
                             </div>
                         </div>
+                        )}
+                        
                     </Modal.Body>
                 </Modal>
-            ): null}
 
 
-            {uploadConfirm ? (
+
+
                 <Modal show={uploadConfirm}  className="top-48 centered radius-16">
                     <Modal.Body className="purchase-modal-bg max-width radius-16">
                         <h2 className='text-white centered top-16'>Upload NFT</h2>
@@ -396,9 +514,9 @@ const Trade = () => {
                         </div>
                     </Modal.Body>
                 </Modal>
-            ): null}
 
-            {show ? (
+
+
                 <Modal show={show}  className="top-48 centered radius-16" style={{overflowY: 'scroll'}}>
                     <Modal.Body className="purchase-modal-bg max-width radius-16" style={{overflowY: 'scroll'}}>
                         <h2 className='text-white centered top-16'>NFT Trade</h2>
@@ -415,9 +533,9 @@ const Trade = () => {
                         </div>
                     </Modal.Body>
                 </Modal>
-            ): null}
 
-            {showConfirm ? (
+
+
                 <Modal show={showConfirm}  className="top-48 centered radius-16">
                     <Modal.Body className="purchase-modal-bg max-width radius-16">
                         <h2 className='text-white centered top-16'>NFT Trade</h2>
@@ -433,7 +551,7 @@ const Trade = () => {
                         </div>
                     </Modal.Body>
                 </Modal>
-            ): null}
+
             <div className='col-3 top-72' onClick={()=>setShow(false)}>
                 <div className='col-12 filter-bg padding-vertical-24 padding-horizontal-8 max-width'>
                     {/* search bar */}
@@ -626,7 +744,7 @@ const Trade = () => {
                     </div>
                 </div>
                 <div className='row top-48'>
-                    {weapons.map((weapon, idx)=>(
+                    {items.map((weapon, idx)=>(
                     <div className='col-12 col-sm-12 col-md-6 col-lg-4 bottom-16' key={idx}>
                         <NFT name={weapon.name} price={weapon.price} img={weapon.image} id={weapon.id} buyWeapon={setBuyWeapon}/>
                     </div>

@@ -22,7 +22,7 @@ const NFT = ({id, name, img, price, buyWeapon})=>{
                 <div className='centered weapon-bg top-8 right-8 left-8'>
                     <div className='col-12 centered '>
                         <div className='col-12 top-20 bottom-20 img-fluid centered padding-16'>
-                            <Image src={img} alt="NFT" fluid={true} className='img-fluid' responsive/>
+                            <Image src={img} alt="NFT" fluid={true} className='img-fluid' />
                         </div>
                     </div>
                 </div>

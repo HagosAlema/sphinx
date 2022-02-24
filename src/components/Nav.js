@@ -44,10 +44,9 @@ const Nav = () => {
         if(window.ethereum !== 'undefined'){
             setAddress(ethereum.selectedAddress)
             setSelectedAddress(ethereum.selectedAddress)
-            console.log("account", ethereum.selectedAddress);
+
             const getAccountBalance = async () =>{
                 var b = await nft.methods.balanceOf(ethereum.selectedAddress).call();
-                console.log(b);
                 setAccountBalance(b)
             }
             if(ethereum.selectedAddress !== 'undefined') {
