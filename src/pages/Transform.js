@@ -15,6 +15,7 @@ import nft from "../contracts/nft";
 import { useRecoilValue } from "recoil";
 import { accountAtom, walletKindAtom } from "../atoms/state";
 import { validateAndFormatWalletAddress } from "opensea-js/lib/utils/utils";
+import NFTSlider from "../components/NFTSlider";
 const weapons = [
     {name: "BLACK RIFFLE", id: 1, image: weapon1, price: 130},
     {name: "RED RIFFLE", id: 2, image: weapon2, price: 123},
@@ -42,7 +43,7 @@ const Transform = () => {
     const [game1Items, setGame1Items] = useState([])
     const [game2Items, setGame2Items] = useState([])
     const [storageItems, setStorageItems] = useState([])
-    const [items, setItems] = useState([])
+    const [gameItems, setGameItems] = useState([])
     var game1Nft = []
     var game2Nft = []
     var storageNft = []
@@ -62,7 +63,7 @@ const Transform = () => {
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
-                    public_key: accountAddress,
+                    public_key: testAccount,
                     game: game
                 }
             }).then((result)=>{
@@ -89,14 +90,14 @@ const Transform = () => {
                                                     .then(statUrl=>statUrl.json())
                                                     .then(itemPower=>{
 
-                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower, tokenId: tokenId, statId: statId}
                                                         index++;
                                                         itemList.push(nftItem)
 
                                                         if(game==='game1'){
 
                                                             game1Nft.push(nftItem)
-                                                            setItems([...itemList], nftItem)
+                                                            setGameItems([...itemList], nftItem)
                                                             setGame1Items([...itemList],nftItem)
                                                         } else {
 
@@ -129,7 +130,7 @@ const Transform = () => {
         var itemList = []
         axios.get('http://localhost:3030/getImgInfo', {
             params: {
-                public_key: accountAddress
+                public_key: testAccount
             }
         }).then((result)=>{
             const data = result.data
@@ -155,7 +156,7 @@ const Transform = () => {
                                                 .then(statUrl=>statUrl.json())
                                                 .then(itemPower=>{
 
-                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower, tokenId: tokenId, statId: statId}
                                                     index++;
                                                     itemList.push(nftItem)
                                                     storageNft.push(nftItem)
@@ -199,8 +200,8 @@ const Transform = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='d-flex flex-row centered nft-bottom-bg'>
-                        <p className='price-text centered padding-vertical-16'>{price} CHURR</p>
+                    <div className='d-flex flex-row centered nft-bottom-bg' style={{minHeight:80}}>
+                        {/* <p className='price-text centered padding-vertical-16'>{price} CHURR</p> */}
                     </div>
                 </div>
             </div>
@@ -209,7 +210,21 @@ const Transform = () => {
 
     const onMenuChange = (menu) => {
         const {id, name} = menu;
-        setSelectedMenu(id)
+        if(id===1){
+            setGameItems(game1Items)
+            setSelectedMenu(id)
+        } else if(id===2) {
+            setGameItems(game2Items)
+            setSelectedMenu(id)
+        }
+    }
+
+    const onGameItemChange = (e) => {
+        console.log(e.target.value)
+    }
+
+    const onStorageItemChange = (e) => {
+        console.log(e.taget.value)
     }
 
     return (
@@ -251,11 +266,15 @@ const Transform = () => {
                     
                     <div className='row'>
                         <div className='col-4 d-flex flex-column centered'>
-                            <NFT name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id}/>
-                            <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16 padding-horozontal-24">
+                        <NFTSlider name={gameItems[0].name} price={gameItems[0].price} img={gameItems[0].image} id={gameItems[0].id} buyWeapon={()=>{}} power={gameItems[0].power} hidePrice={true}/>
+                            <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16 padding-horozontal-24" 
+                                onChange={onGameItemChange}
+                                defaultValue={gameItems[0].tokenId}
+                            >
                                 {
-                                    game1Items.map((item, idx)=>(
+                                    gameItems.map((item, idx)=>(
                                         <option 
+                                        value={item.tokenId}
                                         id={item.id}
                                         key={item.id}>{item.name}</option>
                                     ))
@@ -270,8 +289,11 @@ const Transform = () => {
                             <Exchange />
                         </div>
                         <div className='col-4 d-flex flex-column centered'>
-                            <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/>
-                            <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16">
+                            <NFTSlider name={gameItems[0].name} price={gameItems[0].price} img={gameItems[0].image} id={gameItems[0].id} buyWeapon={()=>{}} power={gameItems[0].power} hidePrice={true}/>
+                            {/* <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/> */}
+                            <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16"
+                                onChange={onStorageItemChange}
+                            >
                                 {
                                     storageItems.map((item, idx)=>(
                                         <option 
@@ -314,13 +336,13 @@ const Transform = () => {
                     
                     <div className='row'>
                         <div className='col-4 d-flex flex-column centered'>
-                            <NFT name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id}/>
+                        <NFTSlider name={gameItems[0].name} price={gameItems[0].price} img={gameItems[0].image} id={gameItems[0].id} buyWeapon={()=>{}} power={gameItems[0].power} hidePrice={true}/>
                         </div>
                         <div className="col-4 centered">
                             <Exchange />
                         </div>
                         <div className='col-4 d-flex flex-column centered'>
-                            <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/>
+                        <NFTSlider name={gameItems[0].name} price={gameItems[0].price} img={gameItems[0].image} id={gameItems[0].id} buyWeapon={()=>{}} power={gameItems[0].power} hidePrice={true}/>
                         </div>
                     </div>
                     <div className="d-flex flex-row centered padding-vertical-48">
