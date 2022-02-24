@@ -100,9 +100,25 @@ const Trade = () => {
     }
 
     const purchase = () => {
-        //TODO purchase action here
-        setShow(false)
-        setShowConfirm(true)
+        console.log("finish purchase!!")
+        console.log(nftId)
+        console.log(accountAddress)
+
+        nft.methods.buyimgnft(nftId).send({from: accountAddress, gas:3000000})
+        .once('sending', (payload) => { console.log(payload);})
+        .on('error', function(error){ console.error(error) })
+        .then(function(receipt){
+            console.log(receipt);
+            axios.get('http://localhost:3030/buyNftImg', {
+                params: {
+                    token_id: nftId,
+                    public_key: accountAddress
+                }
+            }).then(()=>{
+                setShow(false)
+                setShowConfirm(true)    
+            })
+        });
     }
 
 
@@ -128,7 +144,7 @@ const Trade = () => {
                         .then(response => response.json())
                         .then(json => {
                             nft.methods.getNFTValue(tokenId).call().then(value=>{
-                                const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
+                                const nftItem ={name: item.name ? item.name :'Undefined', id: tokenId, image: json.url, price: value}
                                 index++;
                                 itemList.push(nftItem)
                                 setItems([...itemList],nftItem)
