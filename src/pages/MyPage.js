@@ -14,6 +14,7 @@ import weapon5 from '../assets/images/eye_weapon.png';
 import weapon6 from '../assets/images/kal_weapon.png';
 import NFTSlider from "../components/NFTSlider";
 import axios from "axios";
+import nft from "../contracts/nft";
 
 const menus = [
     {id: 1, name: 'Game1 Items'},
@@ -35,57 +36,158 @@ const weapons = [
 const MyPage = () => {
 
     const walletAddress = useRecoilValue(accountAtom)
+    const testAccount = "0x658f11bd6ed7a0cfeb426d18ae9b066619ddbecd"
     const [selectedMenu, setSelectedMenu] = useState(1)
     const [items, setItems] = useState([])
 
-    const onMenuChange = (menu) => {
-        const {id, name} = menu;
-        setSelectedMenu(id)
-        if(id===1){
-            var itemArr = [
-                weapons[0],
-                weapons[1],
-                weapons[2]
-            ]
-            setItems(itemArr)
-        } else if(id === 2) {
-            var itemArr = [
-                weapons[2],
-                weapons[3],
-                weapons[4]
-            ]
-            setItems(itemArr)
-        } else {
-            var itemArr = [
-                weapons[3],
-                weapons[4],
-                weapons[5]
-            ]
-            setItems(itemArr)
-        }
-    }
+    const [game1Items, setGame1Items] = useState([])
+    const [game2Items, setGame2Items] = useState([])
+    const [storageItems, setStorageItems] = useState([])
+    const game1Nft = []
+    const game2Nft = []
+    const storageNft = []
 
-    useEffect(()=>{
-        var itemArr = [
-            weapons[1],
-            weapons[2],
-            weapons[3]
-        ]
-        setItems(itemArr)
+    useEffect( async()=>{
+        const fetchGameItems = async (game)=>{
+            console.log('Loading game items')
+            var itemList = []
+            axios.get('http://localhost:3030/getItemInfo', {
+                params: {
+                    public_key: walletAddress,
+                    game: game
+                }
+            }).then((result)=>{
+                const data = result.data
+                console.log((result.data));
+                var index = 1;
+                data.forEach((item)=>{
+                    const tokenId = item.img_token_id
+                    const statId = item.stat_token_id
+                    console.log(tokenId)
+                    nft.methods.getUri(tokenId).call().then(res=>{
+
+                        fetch(res)
+                            .then(response => response.json())
+                            .then(json => {
+                                nft.methods.getNFTValue(tokenId).call().then(value=>{
+                                    //get stat info
+                                    nft.methods.getUri(statId).call().then((statUri)=>{
+                                        fetch(statUri)
+                                            .then(statData => statData.json())
+                                            .then(statJson=> {
+
+                                                    fetch(statJson.url)
+                                                    .then(statUrl=>statUrl.json())
+                                                    .then(itemPower=>{
+
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                        index++;
+                                                        itemList.push(nftItem)
+
+                                                        if(game==='game1'){
+
+                                                            game1Nft.push(nftItem)
+                                                            setItems([...itemList], nftItem)
+                                                            setGame1Items([...itemList],nftItem)
+                                                        } else {
+
+                                                            game2Nft.push(nftItem)
+                                                            setGame1Items([...itemList], nftItem)
+                                                        }
+                                                    })
+                                                
+                                            })
+                                        
+                                    })
+                                    
+                                })
+                            }).catch(er=>{
+                                console.log("ERROR==>"+er)
+                            })
+                    })
+                })
+                // setItems(itemList)
+            }).catch(e=>{
+                // console.log(e);
+            })
+        }
+        fetchGameItems('game1')
+        fetchGameItems('game2')
     },[])
 
+    //Get storage items
     useEffect(()=>{
-        axios.get('http://localhost:3030/getItemList', {
+        var itemList = []
+        axios.get('http://localhost:3030/getImgInfo', {
             params: {
                 public_key: walletAddress
             }
         }).then((result)=>{
-            console.log(result);
+            const data = result.data
+
+            var index = 1;
+            data.forEach((item)=>{
+                const tokenId = item.img_token_id
+                const statId = item.stat_token_id
+
+                nft.methods.getUri(tokenId).call().then(res=>{
+
+                    fetch(res)
+                        .then(response => response.json())
+                        .then(json => {
+                            nft.methods.getNFTValue(tokenId).call().then(value=>{
+                                //get stat info
+                                nft.methods.getUri(statId).call().then((statUri)=>{
+                                    fetch(statUri)
+                                        .then(statData => statData.json())
+                                        .then(statJson=> {
+
+                                                fetch(statJson.url)
+                                                .then(statUrl=>statUrl.json())
+                                                .then(itemPower=>{
+
+                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                    index++;
+                                                    itemList.push(nftItem)
+                                                    storageNft.push(nftItem)
+                                                    // setItems([...itemList], nftItem)
+                                                    setStorageItems([...itemList],nftItem)
+                                                })
+                                            
+                                        })
+                                    
+                                })
+                                
+                            })
+                        }).catch(er=>{
+                            console.log("ERROR==>"+er)
+                        })
+                })
+            })
+            // setItems(itemList)
         }).catch(e=>{
-            console.log(e);
+            // console.log(e);
         })
+
     },[])
 
+    const onMenuChange = (menu) => {
+        console.log(game1Items, game2Items, storageItems)
+        const {id, name} = menu;
+        setSelectedMenu(id)
+        if(id===1){
+            setItems(game1Items)
+            // console.log(game1Nft);
+        } else if(id === 2) {
+            setItems(game2Items)
+        } else {
+            setItems(storageItems)
+        }
+    }
+
+    useEffect(()=>{
+        setSelectedMenu(1)
+    },[])
 
     return (
         <div className="row top-108" style={{height:'auto'}}>
@@ -133,6 +235,8 @@ const MyPage = () => {
                                 img={weapon.image}
                                 price={weapon.price}
                                 buyWeapon={()=>{}}
+                                power={weapon.power}
+                                hidePrice={true}
                             />
                         </div>
                     ))

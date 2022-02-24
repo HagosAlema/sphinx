@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {useNavigate} from 'react-router-dom';
 import {Image} from 'react-bootstrap';
 import weapon1 from '../assets/images/black_weapon.png';
@@ -10,6 +10,11 @@ import weapon6 from '../assets/images/kal_weapon.png';
 import {ReactComponent as Exchange} from '../assets/images/svg/transform.svg'
 import {ReactComponent as Confirm} from '../assets/images/svg/confirmed.svg'
 import { Modal } from "react-bootstrap";
+import axios from "axios";
+import nft from "../contracts/nft";
+import { useRecoilValue } from "recoil";
+import { accountAtom, walletKindAtom } from "../atoms/state";
+import { validateAndFormatWalletAddress } from "opensea-js/lib/utils/utils";
 const weapons = [
     {name: "BLACK RIFFLE", id: 1, image: weapon1, price: 130},
     {name: "RED RIFFLE", id: 2, image: weapon2, price: 123},
@@ -28,10 +33,125 @@ const storageMenu = {id: 3, name: 'NFT Storage'}
 
 const Transform = () => {
     const navigate = useNavigate()
+    const accountAddress = useRecoilValue(accountAtom)
+    const testAccount = "0x658f11bd6ed7a0cfeb426d18ae9b066619ddbecd"
     const [selectedMenu, setSelectedMenu] = useState(1)
     const [step, setStep] = useState(1)
     const [transform, setTransformConfirm] = useState(false)
     const [confirm, setConfirm] = useState(false)
+    const [game1Items, setGame1Items] = useState([])
+    const [game2Items, setGame2Items] = useState([])
+    const [storageItems, setStorageItems] = useState([])
+
+
+
+    //get Game1 items
+    //fetch nft items
+    useEffect( async()=>{
+        const fetchGameItems = async (game)=>{
+            console.log('Loading game items')
+            var itemList = []
+            axios.get('http://localhost:3030/getItemInfo', {
+                params: {
+                    public_key: accountAddress,
+                    game: game
+                }
+            }).then((result)=>{
+                const data = result.data
+                console.log((result.data));
+                var index = 1;
+                data.forEach((item)=>{
+                    const tokenId = item.img_token_id
+                    const statId = item.stat_token_id
+                    console.log(tokenId)
+                    nft.methods.getUri(tokenId).call().then(res=>{
+
+                        fetch(res)
+                            .then(response => response.json())
+                            .then(json => {
+                                nft.methods.getNFTValue(tokenId).call().then(value=>{
+                                    //get stat info
+                                    nft.methods.getUri(statId).call().then((statUri)=>{
+                                        fetch(statUri)
+                                            .then(statData => statData.json())
+                                            .then(statJson=> {
+
+                                                    fetch(statJson.url)
+                                                    .then(statUrl=>statUrl.json())
+                                                    .then(itemPower=>{
+
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                        index++;
+                                                        itemList.push(nftItem)
+
+                                                        if(game==='game1'){
+
+                                                            game1Nft.push(nftItem)
+                                                            setItems([...itemList], nftItem)
+                                                            setGame1Items([...itemList],nftItem)
+                                                        } else {
+
+                                                            game2Nft.push(nftItem)
+                                                            setGame1Items([...itemList], nftItem)
+                                                        }
+                                                    })
+                                                
+                                            })
+                                        
+                                    })
+                                    
+                                })
+                            }).catch(er=>{
+                                console.log("ERROR==>"+er)
+                            })
+                    })
+                })
+                // setItems(itemList)
+            }).catch(e=>{
+                // console.log(e);
+            })
+        }
+        fetchGameItems('game1')
+        fetchGameItems('game2')
+    },[])
+
+    //Get storage items
+    useEffect(()=>{
+        var itemList = []
+            axios.get('http://localhost:3030/getImgInfo', {
+                params: {
+                    public_key: accountAddress,
+                }
+            }).then((result)=>{
+
+                const data = result.data
+                console.log((result));
+                var index = 1;
+                data.forEach((item)=>{
+                    const tokenId = item.token_id
+
+                    nft.methods.getUri(tokenId).call().then(result=>{
+
+                        fetch(result)
+                            .then(response => response.json())
+                            .then(json => {
+                                nft.methods.getNFTValue(tokenId).call().then(value=>{
+                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
+                                    index++;
+                                    itemList.push(nftItem)
+                                    setStorageItems([...itemList],nftItem)
+                                })
+                            }).catch(er=>{
+                                console.log("ERROR==>"+er)
+                            })
+                    })
+                    index++;
+                })
+                // setItems(itemList)
+            }).catch(e=>{
+                console.log(e);
+            })
+    },[])
 
     const NFT = ({id, name, img, price})=>{
         const navigate = useNavigate()
@@ -73,111 +193,123 @@ const Transform = () => {
                     <p className='p2'>프타의 지팡이는 아이템 모양을 변환시키는 <br />신비한 창조의 지팡이 입니다. <br/>자신이 가지고 있는 게임 아이템을 원하는 외형으로 바꿔서 플레이하세요</p>
                 </div>
             </div>
+            {
+                (game1Items.length>0 || game2Items.length>0) && storageItems.length>0 ?
+            (<div>
+                {step===1 ? 
+                <div className='nft-bg padding-24 padding-horizontal-48 top-60'>
+                    <div className="d-flex flex-row justify-content-between" style={{overflow: 'none'}}> 
+                            <div className="d-flex flex-row top-16 bottom-16">
+                                {
+                                    menus.map((menu, idx)=>(
+                                        <button 
+                                            key={idx}
+                                            id={idx} 
+                                            className={menu.id==selectedMenu ? "p1 text-black gradient-btn right-16 radius-10 height-48 centered padding-horizontal-48": " grey-bg p1 text-white right-16 radius-10 height-48 centered padding-horizontal-48"}
+                                            onClick={()=>onMenuChange(menu)}
+                                        >
+                                            {menu.name}
+                                        </button>
+                                    ))
+                                }
+                            </div>
 
-            {step===1 ? 
-            <div className='nft-bg padding-24 padding-horizontal-48 top-60'>
-                <div className="d-flex flex-row justify-content-between" style={{overflow: 'none'}}> 
-                        <div className="d-flex flex-row top-16 bottom-16">
-                            {
-                                menus.map((menu, idx)=>(
-                                    <button 
-                                        key={idx}
-                                        id={idx} 
-                                        className={menu.id==selectedMenu ? "p1 text-black gradient-btn right-16 radius-10 height-48 centered padding-horizontal-48": " grey-bg p1 text-white right-16 radius-10 height-48 centered padding-horizontal-48"}
-                                        onClick={()=>onMenuChange(menu)}
-                                    >
-                                        {menu.name}
-                                    </button>
-                                ))
-                            }
+                            <button 
+                                className="top-16 grey-bg p1 text-white right-48 radius-10 height-48 centered padding-horizontal-48"
+                                onClick={()=>{console.log('Storage NFT')}}
+                            >
+                                {storageMenu.name}
+                            </button>
+                    </div>
+                    
+                    <div className='row'>
+                        <div className='col-4 d-flex flex-column centered'>
+                            <NFT name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id}/>
+                            <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16 padding-horozontal-24">
+                                {
+                                    game1Items.map((item, idx)=>(
+                                        <option 
+                                        id={item.id}
+                                        key={item.id}>{item.name}</option>
+                                    ))
+                                }
+                                {/* <option>BLACK RIFFLE_GAME1 NFT</option>
+                                <option>BLACK RIFFLE_GAME1 NFT</option>
+                                <option>BLACK RIFFLE_GAME1 NFT</option>
+                                <option>BLACK RIFFLE_GAME1 NFT</option> */}
+                            </select>
                         </div>
-
+                        <div className="col-4 centered">
+                            <Exchange />
+                        </div>
+                        <div className='col-4 d-flex flex-column centered'>
+                            <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/>
+                            <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16">
+                                <option>BLACK RIFFLE_GAME1 NFT</option>
+                                <option>BLACK RIFFLE_GAME1 NFT</option>
+                                <option>BLACK RIFFLE_GAME1 NFT</option>
+                                <option>BLACK RIFFLE_GAME1 NFT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="centered">
                         <button 
-                            className="top-16 grey-bg p1 text-white right-48 radius-10 height-48 centered padding-horizontal-48"
-                            onClick={()=>{console.log('Storage NFT')}}
+                            onClick={()=>{setStep(2)}} 
+                            className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-5 height-48 top-48 text-black'>변환하기</button>
+                    </div>
+                </div>: null}
+            {step===2 ?(
+                <div className='nft-bg padding-horizontal-48 top-60'>
+                    <div className="d-flex flex-row justify-content-between left-48" style={{overflow: 'none'}}> 
+                        <div className="height-80 centered">
+                        <button
+                            className="p1 text-black gradient-btn right-16 radius-10 height-48 centered padding-horizontal-48"
+                            onClick={()=>{}}
+                        >
+                            {selectedMenu == 1 ? menus[0].name: menus[1].name}
+                        </button>
+                        </div>
+                        <div className='' style={{backgroundColor: '#2D2E36', height: 80, width: 1}}></div>
+                        <div className="height-80 centered">
+                        <button 
+                            className=" p1 text-black gradient-btn right-48 radius-10 height-48 centered padding-horizontal-48"
+                            onClick={()=>{}}
                         >
                             {storageMenu.name}
                         </button>
-                </div>
-                
-                <div className='row'>
-                    <div className='col-4 d-flex flex-column centered'>
-                        <NFT name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id}/>
-                        <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16">
-                            <option>BLACK RIFFLE_GAME1 NFT</option>
-                            <option>BLACK RIFFLE_GAME1 NFT</option>
-                            <option>BLACK RIFFLE_GAME1 NFT</option>
-                            <option>BLACK RIFFLE_GAME1 NFT</option>
-                        </select>
+                        </div>
                     </div>
-                    <div className="col-4 centered">
-                        <Exchange />
-                    </div>
-                    <div className='col-4 d-flex flex-column centered'>
-                        <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/>
-                        <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16">
-                            <option>BLACK RIFFLE_GAME1 NFT</option>
-                            <option>BLACK RIFFLE_GAME1 NFT</option>
-                            <option>BLACK RIFFLE_GAME1 NFT</option>
-                            <option>BLACK RIFFLE_GAME1 NFT</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="centered">
-                    <button 
-                        onClick={()=>{setStep(2)}} 
-                        className='gradient-bg padding-horizontal-40 padding-vertical-10 radius-5 height-48 top-48 text-black'>변환하기</button>
-                </div>
-            </div>: null}
-            {step===2 ?(
-            <div className='nft-bg padding-horizontal-48 top-60'>
-                <div className="d-flex flex-row justify-content-between left-48" style={{overflow: 'none'}}> 
-                    <div className="height-80 centered">
-                    <button
-                        className="p1 text-black gradient-btn right-16 radius-10 height-48 centered padding-horizontal-48"
-                        onClick={()=>{}}
-                    >
-                        {selectedMenu == 1 ? menus[0].name: menus[1].name}
-                    </button>
-                    </div>
-                    <div className='' style={{backgroundColor: '#2D2E36', height: 80, width: 1}}></div>
-                    <div className="height-80 centered">
-                    <button 
-                        className=" p1 text-black gradient-btn right-48 radius-10 height-48 centered padding-horizontal-48"
-                        onClick={()=>{}}
-                    >
-                        {storageMenu.name}
-                    </button>
-                    </div>
-                </div>
 
-                <div className='max-width bottom-48' style={{backgroundColor: '#2D2E36', height: 1}}></div>
-                
-                <div className='row'>
-                    <div className='col-4 d-flex flex-column centered'>
-                        <NFT name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id}/>
+                    <div className='max-width bottom-48' style={{backgroundColor: '#2D2E36', height: 1}}></div>
+                    
+                    <div className='row'>
+                        <div className='col-4 d-flex flex-column centered'>
+                            <NFT name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id}/>
+                        </div>
+                        <div className="col-4 centered">
+                            <Exchange />
+                        </div>
+                        <div className='col-4 d-flex flex-column centered'>
+                            <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/>
+                        </div>
                     </div>
-                    <div className="col-4 centered">
-                        <Exchange />
-                    </div>
-                    <div className='col-4 d-flex flex-column centered'>
-                        <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/>
+                    <div className="d-flex flex-row centered padding-vertical-48">
+                        <button 
+                            onClick={()=>{setTransformConfirm(true)}} 
+                            className='gradient-bg radius-20 padding-horizontal-16 padding-vertical-1 height-40 text-black'>외형 바꾸기</button>
+                        <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setStep(1)}}>
+                            <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
+                        </div>
+                    
                     </div>
                 </div>
-                <div className="d-flex flex-row centered padding-vertical-48">
-                    <button 
-                        onClick={()=>{setTransformConfirm(true)}} 
-                        className='gradient-bg radius-20 padding-horizontal-16 padding-vertical-1 height-40 text-black'>외형 바꾸기</button>
-                    <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setStep(1)}}>
-                        <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
-                    </div>
-                
-                </div>
+            ): null}
+            </div>)
+            : <div className='nft-bg padding-horizontal-48 top-60 padding-vertical-60'>
+                <p className="text-white d-flex centered font-size-48">No Items to transform</p>
             </div>
-                ): null
             }
 
-            {transform ? (
                 <Modal show={transform}  className="top-48 centered radius-16">
                     <Modal.Body className="purchase-modal-bg max-width radius-16">
                         <h2 className='text-white centered top-16'>Design Transform</h2>
@@ -199,9 +331,9 @@ const Transform = () => {
                         </div>
                     </Modal.Body>
                 </Modal>
-            ): null}
 
-            {confirm ? (
+
+
                 <Modal show={confirm}  className="top-48 centered radius-16">
                     <Modal.Body className="purchase-modal-bg max-width radius-16">
                         <h2 className='text-white centered top-16'>Design Transfrom</h2>
@@ -220,7 +352,7 @@ const Transform = () => {
                         </div>
                     </Modal.Body>
                 </Modal>
-            ): null}
+
         </div>
     )
 }

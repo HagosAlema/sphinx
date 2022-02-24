@@ -17,7 +17,7 @@ const items = [
     {id: 3, name: "Empty"}
 ]
 
-const NFTSlider = ({id, name, img, price, buyWeapon})=>{
+const NFTSlider = ({id, name, img, price, buyWeapon, power, hidePrice})=>{
     const navigate = useNavigate()
     const [selectedIcon, setSelectedIcon] = useState(0)
 
@@ -57,41 +57,21 @@ const NFTSlider = ({id, name, img, price, buyWeapon})=>{
                             </div>
                         </div>
                     </div>
-                    <div className='nft-bottom-bg height-82'>
-                        <p className='price-text centered'>{price} CHURR</p>
-                    </div>
+                    
+                        <div className='nft-bottom-bg height-82'>
+                        {!hidePrice?<p className='price-text centered'>{price} CHURR</p>:null}
+                        </div>
+                    
                 </div>
                 :
                 <div className="top-8">
-                    <div className="d-flex flex-row padding-horizontal-36">
+                    <div className="d-flex flex-row padding-horizontal-36 centered" style={{minHeight: 100}}>
                         <SwordIcon />
                         <p className="left-16 nft-id-text"
-                        style={{fontSize: '2.5rem'}}>800-1000</p>
-                    </div>
-                    {/* <div className="d-flex flex-row padding-horizontal-36">
-                        <p 
-                            style={{fontSize: 16, lineHeight: '25px', color: '#E2CBA6'}}
-                        >Strength</p>
-                        <p
-                        style={{fontSize: 16, lineHeight: '25px', color: '#90CC54'}}
-                        >+50 </p>
-                    </div> */}
-                    <div className="padding-horizontal-36 padding-vertical-48">
-                        {items.map((item, idx)=>(
-                            <div 
-                                id={idx}
-                                key={idx}
-                                className="d-flex flex-row top-8">
-                                    <img 
-                                    alt="ICON"
-                                    src={rectangle} style={{width: 30, height: 30}} />
-                                    <p className="p2 left-8">{item.name}</p>
-
-                            </div>
-                        ))}
+                        style={{fontSize: '2.5rem'}}>{power}</p>
                     </div>
                     
-                    <div className='d-flex flex-row nft-bottom-bg top-24'>
+                    <div className='d-flex flex-row nft-bottom-bg top-24' style={{minHeight: 100}}>
                     </div>
                 </div>
                 }
