@@ -53,7 +53,7 @@ const MyPage = () => {
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
-                    public_key: walletAddress,
+                    public_key: testAccount,
                     game: game
                 }
             }).then((result)=>{
@@ -120,7 +120,7 @@ const MyPage = () => {
         var itemList = []
         axios.get('http://localhost:3030/getImgInfo', {
             params: {
-                public_key: walletAddress
+                public_key: testAccount
             }
         }).then((result)=>{
             const data = result.data
@@ -185,6 +185,10 @@ const MyPage = () => {
         }
     }
 
+    useEffect(()=>{
+        setSelectedMenu(1)
+    },[])
+
     return (
         <div className="row top-108" style={{height:'auto'}}>
             <Image fluid={false} src={banner} />
@@ -232,6 +236,7 @@ const MyPage = () => {
                                 price={weapon.price}
                                 buyWeapon={()=>{}}
                                 power={weapon.power}
+                                hidePrice={true}
                             />
                         </div>
                     ))

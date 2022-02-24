@@ -75,7 +75,6 @@ const Trade = () => {
     const [itemImage, setItemImage] = useState(null) //URI
     const [imageBuff, setImageBuffer] = useState(null) //Buffer
     const [jsonAddress, setJsonAddress] = useState('');
-    
 
     //Market Items
     const [items, setItems] = useState([])
@@ -105,7 +104,7 @@ const Trade = () => {
         console.log(nftId)
         console.log(accountAddress)
 
-        nft.methods.buyimgnft(nftId).send({from: accountAddress, gas:3000000})
+        nft.methods.buyimgnft(nftId).send({from: accountAddress, gas:30000000})
         .once('sending', (payload) => { console.log(payload);})
         .on('error', function(error){ console.error(error) })
         .then(function(receipt){
