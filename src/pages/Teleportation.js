@@ -68,7 +68,6 @@ const Teleportation = () => {
                                                     fetch(statJson.url)
                                                     .then(statUrl=>statUrl.json())
                                                     .then(itemPower=>{
-
                                                         const nftItem ={name: item.name ? item.name :'Undefined', id: tokenId, image: json.url, price: value, power: itemPower, stat_Id: statId, tokenId:tokenId}
                                                         index++;
                                                         itemList.push(nftItem)
@@ -130,12 +129,8 @@ const Teleportation = () => {
       };
 
       const onItemSelect = (id, name, price, image, power) => {
-        // const ChangeItem={power: power, id: id}
         const ChangeItem={name:name, img:image, id:id, power:power, hidePrice:true}
         setChangeItem(ChangeItem)
-
-
-        console.log("select onitemselect ",id, name, power);
         setDialog1(true)
       }
 
@@ -280,13 +275,13 @@ const Teleportation = () => {
                             
                             <div className='row'>
                                 <div className='col-4'>
-                                    <NFTSlider name={changeItem.name} price={changeItem.price} img={changeItem.image} id={weapons[0].id} power={changeItem.power} hidePrice={true}/>
+                                    <NFTSlider name={changeItem.name} price={changeItem.price} img={changeItem.img} id={changeItem.id} power={changeItem.power} hidePrice={true}/>
                                 </div>
                                 <div className="col-4 centered">
                                     <Arrow />
                                 </div>
                                 <div className='col-4'>
-                                    <NFTSlider name={changeItem.name} price={changeItem.price} img={changeItem.image} id={changeItem.id} power={changeItem.power*ratio_game} hidePrice={true}/>
+                                    <NFTSlider name={changeItem.name} price={changeItem.price} img={changeItem.img} id={changeItem.id} power={changeItem.power*ratio_game} hidePrice={true}/>
                                 </div>
                             </div>
                             <div className="d-flex flex-row centered padding-vertical-48">
