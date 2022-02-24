@@ -17,7 +17,7 @@ const items = [
     {id: 3, name: "Empty"}
 ]
 
-const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
+const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect, hidePrice, power})=>{
     const navigate = useNavigate()
     const [selectedIcon, setSelectedIcon] = useState(0)
 
@@ -58,7 +58,7 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
                         </div>
                     </div>
                     <div className='nft-bottom-bg height-82'>
-                        <p className='price-text centered'>{price} CHURR</p>
+                        {!hidePrice?<p className='price-text centered'>{price} CHURR</p>:null}
                     </div>
                 </div>
                 :
@@ -67,7 +67,7 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
                         <SwordIcon />
                         <p className="left-16 nft-power-text"
                             style={{fontSize: '2.5rem'}}
-                        >800-1000</p>
+                        >{power}</p>
                     </div>
                     {/* <div className="d-flex flex-row padding-horizontal-36">
                         <p 

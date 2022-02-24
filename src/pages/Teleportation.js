@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {useNavigate} from 'react-router-dom';
 import Countdown from "react-countdown";
 
@@ -9,35 +9,95 @@ import {ReactComponent as Game2Icon} from '../assets/images/svg/game2_icon.svg';
 import {ReactComponent as Arrow} from '../assets/images/arrow_forward.svg'
 import {ReactComponent as Confirm} from '../assets/images/svg/confirmed.svg'
 
-import weapon1 from '../assets/images/black_weapon.png';
-import weapon2 from '../assets/images/red_weapon.png';
-import weapon3 from '../assets/images/white_weapon.png';
-import weapon4 from '../assets/images/space_weapon.png';
-import weapon5 from '../assets/images/eye_weapon.png';
-import weapon6 from '../assets/images/kal_weapon.png';
 import NFTSlider from "../components/NFTSlider";
 import { Modal, ModalBody } from "react-bootstrap";
 import NFTTeleport from "../components/NFTTeleport";
 
-const weapons = [
-    {name: "BLACK RIFFLE", id: 1, image: weapon1, price: 130},
-    {name: "RED RIFFLE", id: 2, image: weapon2, price: 123},
-    {name: "WHITE RIFFLE", id: 3, image: weapon5, price: 125},
-    // {name: "SPACE GUN", id: 4, image: weapon3, price: 430},
-    // {name: "EYE GUN", id: 5, image: weapon4, price: 432},
-    // {name: "BLACK KAL", id: 6, image: weapon6, price: 230}
-]
+import axios from 'axios';
+import nft from '../contracts/nft';
+import ratio from '../contracts/ratio';
+import { accountAtom } from '../atoms/state';
+import { useRecoilValue } from 'recoil';
+import { CommentsDisabledOutlined } from "@mui/icons-material";
 
-
-const options = ['Game 1', 'Game 2']
+const options = ['game1', 'game2']
 
 const Teleportation = () => {
     const navigate = useNavigate()
     const [dialog1, setDialog1] = useState(false)
     const [dialog2, setDialog2] = useState(false)
     const [dialog3, setDialog3] = useState(false)
-    const [option1, setOption1] = useState('Game 1')
-    const [option2, setOption2] = useState('Game 2')
+    const [option1, setOption1] = useState('game1')
+    const [option2, setOption2] = useState('game2')
+    
+    const accountAddress = useRecoilValue(accountAtom)
+    const testAccount = "0x658f11bd6ed7a0cfeb426d18ae9b066619ddbecd"
+    const [weapons, setWeapons] = useState([])
+    const [ratio_game, setRatio] = useState(0)
+    const [changeItem, setChangeItem]=useState()
+
+    useEffect(()=> {
+        // const fetchGameItems = async (game)=>{
+            console.log('Loading game items', option1, option2)
+            setWeapons([]);
+            var itemList = []
+            axios.get('http://localhost:3030/getItemInfo', {
+                params: {
+                    public_key: testAccount,
+                    game: option1
+                }
+            }).then((result)=>{
+                const data = result.data
+                console.log((result.data));
+                var index = 1;
+                data.forEach((item)=>{
+                    const tokenId = item.img_token_id
+                    const statId = item.stat_token_id
+                    nft.methods.getUri(tokenId).call().then(res=>{
+                        fetch(res)
+                            .then(response => response.json())
+                            .then(json => {
+                                nft.methods.getNFTValue(tokenId).call().then(value=>{
+                                    //get stat info
+                                    nft.methods.getUri(statId).call().then((statUri)=>{
+                                        fetch(statUri)
+                                            .then(statData => statData.json())
+                                            .then(statJson=> {
+
+                                                    fetch(statJson.url)
+                                                    .then(statUrl=>statUrl.json())
+                                                    .then(itemPower=>{
+
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower, stat_Id: statId, tokenId:tokenId}
+                                                        index++;
+                                                        itemList.push(nftItem)
+                                                        setWeapons([...itemList],nftItem)
+                                                    })
+                                                
+                                            })
+                                        
+                                    })
+                                    
+                                })
+                            }).catch(er=>{
+                                console.log("ERROR==>"+er)
+                            })
+                    })
+                })
+                // setItems(itemList)
+            }).catch(e=>{
+                // console.log(e);
+            })
+
+            //doing ratio
+            ratio.methods.getratio(option1,option2).call().then((res)=>{
+               let ratio_temp = res/100;
+               setRatio(ratio_temp)
+            })
+                
+        // }
+        
+    },[option1])
 
     const renderer = ({ hours, minutes, seconds, completed }) => {
         if (completed) {
@@ -49,13 +109,14 @@ const Teleportation = () => {
         }
       };
 
-      const onItemSelect = (id, name, price, image) => {
-        console.log(id,name,price,image);
+      const onItemSelect = (id, name, price, image,) => {
+
+    
         setDialog1(true)
       }
 
       const onOption1Change = (event) => {
-          console.log(event.target.value);
+        //   console.log(event.target.value);
           const value = event.target.value
           setOption1(value)
           if(value === options[0]) {
@@ -107,8 +168,8 @@ const Teleportation = () => {
                                     onChange={onOption1Change}
                                     value={option1}
                                 >
-                                    <option value="Game 1">Game 1</option>
-                                    <option value="Game 2">Game 2</option>
+                                    <option value="game1">game1</option>
+                                    <option value="game2">game2</option>
                                 </select>
                             </div>
                             <div className="padding-8"/>
@@ -127,11 +188,11 @@ const Teleportation = () => {
                                     onChange={onOption2Change}
                                     value={option2}
                                 >
-                                    <option value="Game 1">Game 1</option>
-                                    <option value="Game 2">Game 2</option>
+                                    <option value="game1">game1</option>
+                                    <option value="game2">game2</option>
                                 </select>
                             </div> 
-                        <p className="padding-8" style={{color:"#45C067"}}>능력치 증가 비율 5배</p>
+                        <p className="padding-8" style={{color:"#45C067"}}>능력치 증가 비율 {ratio_game}배</p>
                         </div>
                     </div>
                     <div className="">
@@ -156,6 +217,8 @@ const Teleportation = () => {
                                 price={weapon.price}
                                 buyWeapon={()=>{}}
                                 onItemSelect={onItemSelect}
+                                power={weapon.power}
+                                hidePrice={true}
                             />
                         </div>
                     ))
@@ -175,7 +238,7 @@ const Teleportation = () => {
                                     className="p1 text-black gradient-btn right-16 radius-10 height-48 centered padding-horizontal-48"
                                     onClick={()=>{}}
                                 >
-                                    Game 1
+                                    game1
                                 </button>
                                 </div>
                                 <div className='' style={{backgroundColor: '#2D2E36', height: 80, width: 1}}></div>
@@ -184,7 +247,7 @@ const Teleportation = () => {
                                     className=" p1 text-black gradient-btn right-48 radius-10 height-48 centered padding-horizontal-48"
                                     onClick={()=>{}}
                                 >
-                                    Game 2
+                                    game2
                                 </button>
                                 </div>
                             </div>
@@ -193,13 +256,13 @@ const Teleportation = () => {
                             
                             <div className='row'>
                                 <div className='col-4'>
-                                    <NFTSlider name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id}/>
+                                    <NFTSlider name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id} power={weapons[0].power} hidePrice={true}/>
                                 </div>
                                 <div className="col-4 centered">
                                     <Arrow />
                                 </div>
                                 <div className='col-4'>
-                                    <NFTSlider name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/>
+                                    <NFTSlider name={weapons[0].name} price={weapons[0].price} img={weapons[0].image} id={weapons[0].id} power={weapons[0].power*ratio_game} hidePrice={true}/>
                                 </div>
                             </div>
                             <div className="d-flex flex-row centered padding-vertical-48">
@@ -224,7 +287,7 @@ const Teleportation = () => {
                         {/* <div className='centered padding-vertical-72 top-32 bottom-12'><p className='purchase-nft-body '>정말로 구매 하시겠습니까?</p></div> */}
                         <div className='centered d-flex flex-column'>
                             {/* <Confirm/> */}
-                            <p className='purchase-nft-body top-8'>정말로 _____ 아이템을 <br/>Game1에서 Game 2로 이동하시겠습니까?</p>
+                            <p className='purchase-nft-body top-8'>정말로 weapon을 <br/>{option1}에서 {option2}로 이동하시겠습니까?</p>
                         </div>
                         
                         <div className='d-flex flex-row centered top-72 bottom-32'>

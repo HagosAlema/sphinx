@@ -53,7 +53,7 @@ const MyPage = () => {
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
-                    public_key: walletAddress,
+                    public_key: testAccount,
                     game: game
                 }
             }).then((result)=>{
