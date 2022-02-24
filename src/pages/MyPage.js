@@ -36,7 +36,7 @@ const weapons = [
 const MyPage = () => {
 
     const walletAddress = useRecoilValue(accountAtom)
-    const testAccount = "0x658f11bd6ed7a0cfeb426d18ae9b066619ddbecd"
+    // const testAccount = "0x658f11bd6ed7a0cfeb426d18ae9b066619ddbecd"
     const [selectedMenu, setSelectedMenu] = useState(1)
     const [items, setItems] = useState([])
 
@@ -57,7 +57,7 @@ const MyPage = () => {
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
-                    public_key: testAccount,
+                    public_key: walletAddress,
                     game: game
                 }
             }).then((result)=>{
@@ -107,7 +107,7 @@ const MyPage = () => {
         var itemList = []
             axios.get('http://localhost:3030/getImgInfo', {
                 params: {
-                    public_key: testAccount,
+                    public_key: walletAddress,
                 }
             }).then((result)=>{
 
