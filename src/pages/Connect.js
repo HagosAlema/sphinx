@@ -44,7 +44,7 @@ const Connect = ({ resetModal }) => {
             const accounts = await window.ethereum.request({method: 'eth_requestAccounts'})
             setWalletAccount(accounts[0])
             console.log(accounts[0])
-            const b = await nft.methods.balanceOf(accounts[0]).call()
+            const b = await token.methods.balanceOf(accounts[0]).call()
             setBalance(b)
             console.log("balances", b);
             setShow(false)
