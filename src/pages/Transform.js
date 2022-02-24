@@ -13,7 +13,8 @@ import { Modal } from "react-bootstrap";
 import axios from "axios";
 import nft from "../contracts/nft";
 import { useRecoilValue } from "recoil";
-import { accountAtom } from "../atoms/state";
+import { accountAtom, walletKindAtom } from "../atoms/state";
+import { validateAndFormatWalletAddress } from "opensea-js/lib/utils/utils";
 const weapons = [
     {name: "BLACK RIFFLE", id: 1, image: weapon1, price: 130},
     {name: "RED RIFFLE", id: 2, image: weapon2, price: 123},
@@ -46,41 +47,64 @@ const Transform = () => {
 
     //get Game1 items
     //fetch nft items
-    useEffect(()=>{
-        const fetchGameItems = (game)=>{
+    useEffect( async()=>{
+        const fetchGameItems = async (game)=>{
             console.log('Loading game items')
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
-                    public_key: testAccount,
-                    game:game
+                    public_key: accountAddress,
+                    game: game
                 }
             }).then((result)=>{
                 const data = result.data
-                console.log((result));
+                console.log((result.data));
                 var index = 1;
                 data.forEach((item)=>{
-                    const tokenId = item.token_id
+                    const tokenId = item.img_token_id
+                    const statId = item.stat_token_id
+                    console.log(tokenId)
+                    nft.methods.getUri(tokenId).call().then(res=>{
 
-                    nft.methods.getUri(tokenId).call().then(result=>{
-
-                        fetch(result)
+                        fetch(res)
                             .then(response => response.json())
                             .then(json => {
                                 nft.methods.getNFTValue(tokenId).call().then(value=>{
-                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
-                                    index++;
-                                    itemList.push(nftItem)
-                                    if(game==='game1')
-                                        setGame1Items([...itemList],nftItem)
-                                    else
-                                        setGame1Items([...itemList], nftItem)
+                                    //get stat info
+                                    nft.methods.getUri(statId).call().then((statUri)=>{
+                                        fetch(statUri)
+                                            .then(statData => statData.json())
+                                            .then(statJson=> {
+
+                                                    fetch(statJson.url)
+                                                    .then(statUrl=>statUrl.json())
+                                                    .then(itemPower=>{
+
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                        index++;
+                                                        itemList.push(nftItem)
+
+                                                        if(game==='game1'){
+
+                                                            game1Nft.push(nftItem)
+                                                            setItems([...itemList], nftItem)
+                                                            setGame1Items([...itemList],nftItem)
+                                                        } else {
+
+                                                            game2Nft.push(nftItem)
+                                                            setGame1Items([...itemList], nftItem)
+                                                        }
+                                                    })
+                                                
+                                            })
+                                        
+                                    })
+                                    
                                 })
                             }).catch(er=>{
                                 console.log("ERROR==>"+er)
                             })
                     })
-                    index++;
                 })
                 // setItems(itemList)
             }).catch(e=>{
@@ -96,7 +120,7 @@ const Transform = () => {
         var itemList = []
             axios.get('http://localhost:3030/getImgInfo', {
                 params: {
-                    public_key: testAccount,
+                    public_key: accountAddress,
                 }
             }).then((result)=>{
 

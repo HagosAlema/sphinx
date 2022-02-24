@@ -53,7 +53,7 @@ const MyPage = () => {
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
-                    public_key: testAccount,
+                    public_key: walletAddress,
                     game: game
                 }
             }).then((result)=>{
@@ -120,7 +120,7 @@ const MyPage = () => {
         var itemList = []
         axios.get('http://localhost:3030/getImgInfo', {
             params: {
-                public_key: testAccount
+                public_key: walletAddress
             }
         }).then((result)=>{
             const data = result.data
