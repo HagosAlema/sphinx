@@ -13,6 +13,7 @@ import weapon4 from '../assets/images/space_weapon.png';
 import weapon5 from '../assets/images/eye_weapon.png';
 import weapon6 from '../assets/images/kal_weapon.png';
 import NFTSlider from "../components/NFTSlider";
+import axios from "axios";
 
 const menus = [
     {id: 1, name: 'Game1 Items'},
@@ -71,6 +72,18 @@ const MyPage = () => {
             weapons[3]
         ]
         setItems(itemArr)
+    },[])
+
+    useEffect(()=>{
+        axios.get('http://localhost:3030/getItemList', {
+            params: {
+                public_key: walletAddress
+            }
+        }).then((result)=>{
+            console.log(result);
+        }).catch(e=>{
+            console.log(e);
+        })
     },[])
 
 
