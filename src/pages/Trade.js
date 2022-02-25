@@ -114,12 +114,14 @@ const Trade = () => {
             axios.get('http://localhost:3030/buyNftImg', {
                 params: {
                     token_id: nftId,
-                    public_key: accountAddress
+                    public_key: accountAddress,
+                    name: nftName
                 }
             }).then(()=>{
                 setShow(false)
                 setShowConfirm(true)
                 setBuySpinner(false)
+                window.location.reload(false)
             });
         })
     }
@@ -157,7 +159,6 @@ const Trade = () => {
                             console.log("ERROR==>"+er)
                         })
                 })
-                index++;
             })
             // setItems(itemList)
         }).catch(e=>{

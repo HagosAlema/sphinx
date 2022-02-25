@@ -118,6 +118,7 @@ const MyPage = () => {
 
     //Get storage items
     useEffect(()=>{
+        console.log('loading storage items')
         var itemList = []
         axios.get('http://localhost:3030/getImgInfo', {
             params: {
@@ -138,26 +139,38 @@ const MyPage = () => {
                         .then(json => {
                             nft.methods.getNFTValue(tokenId).call().then(value=>{
                                 //get stat info
-                                nft.methods.getUri(statId).call().then((statUri)=>{
-                                    fetch(statUri)
-                                        .then(statData => statData.json())
-                                        .then(statJson=> {
+                                // nft.methods.getUri(statId).call().then((statUri)=>{
+                                //     fetch(statUri)
+                                //         .then(statData => statData.json())
+                                //         .then(statJson=> {
 
-                                                fetch(statJson.url)
-                                                .then(statUrl=>statUrl.json())
-                                                .then(itemPower=>{
+                                //                 // fetch(statJson.url)
+                                //                 // .then(statUrl=>statUrl.json())
+                                //                 // .then(itemPower=>{
 
-                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: modifiedStat? modifiedStat : itemPower}
-                                                    index++;
-                                                    itemList.push(nftItem)
-                                                    storageNft.push(nftItem)
-                                                    // setItems([...itemList], nftItem)
-                                                    setStorageItems([...itemList],nftItem)
-                                                })
+                                //                 //     const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: modifiedStat? modifiedStat : itemPower}
+                                //                 //     index++;
+                                //                 //     itemList.push(nftItem)
+                                //                 //     storageNft.push(nftItem)
+                                //                 //     // setItems([...itemList], nftItem)
+                                //                 //     setStorageItems([...itemList],nftItem)
+                                //                 // })
+                                //                 const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: modifiedStat? modifiedStat : itemPower}
+                                //                     index++;
+                                //                     itemList.push(nftItem)
+                                //                     storageNft.push(nftItem)
+                                //                     // setItems([...itemList], nftItem)
+                                //                     setStorageItems([...itemList],nftItem)
                                             
-                                        })
+                                //         })
                                     
-                                })
+                                // })
+                                const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: 'null'}
+                                index++;
+                                itemList.push(nftItem)
+                                storageNft.push(nftItem)
+                                // setItems([...itemList], nftItem)
+                                setStorageItems([...itemList],nftItem)
                                 
                             })
                         }).catch(er=>{

@@ -134,7 +134,10 @@ const Transform = () => {
         fetchGameItems('game1')
         fetchGameItems('game2')
     },[])
-    //Get storage items
+
+    
+
+    // Get storage items
     useEffect(()=>{
         var itemList = []
         axios.get('http://localhost:3030/getImgInfo', {
@@ -157,27 +160,16 @@ const Transform = () => {
                             nft.methods.getNFTValue(tokenId).call().then(value=>{
                                 //get stat info
                                 nft.methods.getUri(statId).call().then((statUri)=>{
-                                    fetch(statUri)
-                                        .then(statData => statData.json())
-                                        .then(statJson=> {
-
-                                                fetch(statJson.url)
-                                                .then(statUrl=>statUrl.json())
-                                                .then(itemPower=>{
-
-                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: modifiedStat? modifiedStat : itemPower, tokenId: tokenId, statId: statId}
-                                                    if(index===1) {
-                                                        setStoreNft(nftItem)
-                                                    }
-                                                    index++;
-                                                    itemList.push(nftItem)
-                                                    storageNft.push(nftItem)
-                                                    // setItems([...itemList], nftItem)
-                                                    setStorageItems([...itemList],nftItem)
-
-                                                })
-                                            
-                                        })
+                                    
+                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: 'undefined', tokenId: tokenId, statId: statId}
+                                    if(index===1) {
+                                        setStoreNft(nftItem)
+                                    }
+                                    index++;
+                                    itemList.push(nftItem)
+                                    storageNft.push(nftItem)
+                                    // setItems([...itemList], nftItem)
+                                    setStorageItems([...itemList],nftItem)
                                     
                                 })
                                 
@@ -272,7 +264,7 @@ const Transform = () => {
 
     const onStorageItemChange = (e) => {
         // console.log(e.taget.value)
-        const value = e.taget.value
+        const value = e.target.value
         console.log(value)
         if(storageItems.length>0) {
             const nft = storageItems.find(item=>item.tokenId==value)
@@ -301,7 +293,7 @@ const Transform = () => {
                 </div>
             </div>
             {
-                (game1Items.length>0 || game2Items.length>0) || storageItems.length>0 ?
+                (game1Items.length>0 || game2Items.length>0) && storageItems.length>0 ?
             (<div>
                 {step===1 ? 
                 <div className='nft-bg padding-24 padding-horizontal-48 top-60'>
