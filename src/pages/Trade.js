@@ -67,6 +67,7 @@ const Trade = () => {
     const [nftImage, setNftImage] = useState(null)
     const [uploadDialog, setUploadDialog] = useState(false)
     const [showSpinner, setShowSpinner] = useState(false)
+    const [showBuySpinner, setBuySpinner] = useState(false)
 
     const [localImage, setLocalImage] = useState(null) //File
     const [itemName, setItemName]=useState('')
@@ -100,6 +101,7 @@ const Trade = () => {
     }
 
     const purchase = () => {
+        setBuySpinner(true)
         console.log("finish purchase!!")
         console.log(nftId)
         console.log(accountAddress)
@@ -116,7 +118,8 @@ const Trade = () => {
                 }
             }).then(()=>{
                 setShow(false)
-                setShowConfirm(true)    
+                setShowConfirm(true)
+                setBuySpinner(false)
             });
         })
     }
@@ -254,17 +257,6 @@ const Trade = () => {
             console.log(file)
             const buffer = Buffer(reader.result)
             setImageBuffer(buffer)
-            // const formData = new FormData()
-            // formData.append("img",file)
-            // formData.append("name", "game 1")
-            // formData.append('public_key', accountAddress)
-            // formData.append("stat", stat)
-
-            // axios.post('http://localhost:3030/mintDesignNFT',formData, {headers:{ 'Content-Type': 'multipart/form-data' }}).then(result=>{
-            //     console.log('',result.data)
-            // }).catch(e=>{
-            //     console.log(e)
-            // })
         }
         setLocalImage(file)
         setItemImage(URL.createObjectURL(file))
@@ -539,6 +531,16 @@ const Trade = () => {
                         <div className='max-width top-8' style={{backgroundColor: '#2D2E36', height: 1}}></div>
                         <div className='centered padding-vertical-16 bottom-16'><p className='purchase-nft-body '>정말로 구매 하시겠습니까?</p></div>
                         <NFT1/>
+                        {showBuySpinner ? (
+                            <div className="d-flex flex-column centered top-16 bottom-16">
+                                <p className="text-white ">Uplaoding... Please wait ... </p>
+                                <div className="d-flex flex-row centered top-8">
+                                    <Spinner animation="grow" variant="warning" size="sm"  className="right-8"/>
+                                    <Spinner animation="grow" variant="warning"/>
+                                    <Spinner animation="grow" variant="warning" size="sm"  className="left-8"/>
+                                </div>
+                            </div>
+                        ): (
                         <div className='d-flex flex-row centered top-16 bottom-16'>
                             <button onClick={()=>{purchase()}} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>구매 하기 </button>
                             <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setShow(false)}}>
@@ -546,7 +548,7 @@ const Trade = () => {
                                     <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
                                 {/* </div> */}
                             </div>
-                        </div>
+                        </div>)}
                     </Modal.Body>
                 </Modal>
 

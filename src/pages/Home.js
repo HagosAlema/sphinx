@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {useNavigate } from 'react-router-dom';
-import {ButtonGroup, ToggleButton, Image, Modal, ModalBody} from 'react-bootstrap';
+import {ButtonGroup, ToggleButton, Image, Modal, ModalBody, Spinner} from 'react-bootstrap';
 import logo from '../assets/images/main_bg.gif';
 import weapon1 from '../assets/images/black_weapon.png';
 import weapon2 from '../assets/images/red_weapon.png';
@@ -13,7 +13,7 @@ import {ReactComponent as Arrow} from '../assets/images/svg/vertical_arrow.svg'
 import {ReactComponent as ETH} from '../assets/images/svg/eth_icon.svg'
 import {ReactComponent as CHURR} from '../assets/images/svg/churr.svg'
 import {ReactComponent as Confirm} from '../assets/images/svg/confirmed.svg'
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { accountAtom, balance, walletKindAtom } from '../atoms/state';
 import token from '../contracts/token.js';
 const {ethereum} = window
@@ -28,6 +28,8 @@ const Home = () => {
     const [address, setAddress] = useState(ethereum.selectedAddress)
     const setSelectedAddress = useSetRecoilState(accountAtom)
     const setAccountBalance = useSetRecoilState(balance)
+    const accountBalance = useRecoilValue(balance)
+    const [showSpinner, setShowSpinner] = useState(false)
 
 
     const onWieChange = (event) => {
@@ -41,6 +43,7 @@ const Home = () => {
     }
 
     const buyToken = async() => {
+        setShowSpinner(true)
         let tokenAmount = document.getElementById("churr_value").value;
         console.log(tokenAmount);
 
@@ -57,6 +60,10 @@ const Home = () => {
                 console.log("b result:",receipt.events.Transfer.returnValues[2]);
                 setConfirm(false)
                 setCheck(true)
+                setShowSpinner(false)
+                setAccountBalance(parseInt(accountBalance) +parseInt(tokenAmount))
+            }).catch(e=>{
+                setShowSpinner(false)
             });
         }
         
@@ -162,7 +169,16 @@ const Home = () => {
                             {/* <Confirm/> */}
                             <p className='purchase-nft-body top-8'>정말로 구매 하시겠습니까?</p>
                         </div>
-                        
+                        {showSpinner ? (
+                            <div className="d-flex flex-column centered top-16 bottom-16">
+                                <p className="text-white ">Processing. Please wait ... </p>
+                                <div className="d-flex flex-row centered top-8">
+                                    <Spinner animation="grow" variant="warning" size="sm"  className="right-8"/>
+                                    <Spinner animation="grow" variant="warning"/>
+                                    <Spinner animation="grow" variant="warning" size="sm"  className="left-8"/>
+                                </div>
+                            </div>
+                        ): (
                         <div className='d-flex flex-row centered top-72 bottom-32'>
                             <button onClick={()=>{
                                 buyToken()
@@ -170,7 +186,7 @@ const Home = () => {
                             <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setConfirm(false)}}>
                                 <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
                             </div>
-                        </div>
+                        </div>)}
                     </ModalBody>
                 </Modal>
 

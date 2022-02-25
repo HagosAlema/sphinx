@@ -69,14 +69,6 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect, hidePrice, 
                             style={{fontSize: '2.5rem'}}
                         >{power}</p>
                     </div>
-                    {/* <div className="d-flex flex-row padding-horizontal-36">
-                        <p 
-                            style={{fontSize: 16, lineHeight: '25px', color: '#E2CBA6'}}
-                        >Strength</p>
-                        <p
-                        style={{fontSize: 16, lineHeight: '25px', color: '#90CC54'}}
-                        >+50 </p>
-                    </div> */}
                     <div 
                         style={{paddingTop: '2rem', paddingBottom: '2rem', paddingLeft: '2rem', paddingRight:'2rem'}}
                     >

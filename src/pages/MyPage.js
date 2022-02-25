@@ -53,7 +53,7 @@ const MyPage = () => {
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
-                    public_key: testAccount,
+                    public_key: walletAddress,
                     game: game
                 }
             }).then((result)=>{
@@ -63,6 +63,7 @@ const MyPage = () => {
                 data.forEach((item)=>{
                     const tokenId = item.img_token_id
                     const statId = item.stat_token_id
+                    const modifiedStat = item.modified_stat
                     console.log(tokenId)
                     nft.methods.getUri(tokenId).call().then(res=>{
 
@@ -80,7 +81,7 @@ const MyPage = () => {
                                                     .then(statUrl=>statUrl.json())
                                                     .then(itemPower=>{
 
-                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power:modifiedStat ? modifiedStat :itemPower}
                                                         index++;
                                                         itemList.push(nftItem)
 
@@ -129,7 +130,7 @@ const MyPage = () => {
             data.forEach((item)=>{
                 const tokenId = item.img_token_id
                 const statId = item.stat_token_id
-
+                const modifiedStat = item.modified_stat
                 nft.methods.getUri(tokenId).call().then(res=>{
 
                     fetch(res)
@@ -146,7 +147,7 @@ const MyPage = () => {
                                                 .then(statUrl=>statUrl.json())
                                                 .then(itemPower=>{
 
-                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower}
+                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: modifiedStat? modifiedStat : itemPower}
                                                     index++;
                                                     itemList.push(nftItem)
                                                     storageNft.push(nftItem)

@@ -43,8 +43,8 @@ const Teleportation = () => {
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
-                    public_key: testAccount,
-                    // public_key:accountAddress,
+                    // public_key: testAccount,
+                    public_key:accountAddress,
                     game: option1
                 }
             }).then((result)=>{
@@ -54,6 +54,7 @@ const Teleportation = () => {
                 data.forEach((item)=>{
                     const tokenId = item.img_token_id
                     const statId = item.stat_token_id
+                    const modifiedStat = item.modified_stat
                     nft.methods.getUri(tokenId).call().then(res=>{
                         fetch(res)
                             .then(response => response.json())
@@ -68,7 +69,7 @@ const Teleportation = () => {
                                                     fetch(statJson.url)
                                                     .then(statUrl=>statUrl.json())
                                                     .then(itemPower=>{
-                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: tokenId, image: json.url, price: value, power: itemPower, stat_Id: statId, tokenId:tokenId}
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: tokenId, image: json.url, price: value, power: modifiedStat? modifiedStat : itemPower, stat_Id: statId, tokenId:tokenId}
                                                         index++;
                                                         itemList.push(nftItem)
                                                         setWeapons([...itemList],nftItem)

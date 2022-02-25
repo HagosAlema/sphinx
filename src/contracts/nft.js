@@ -1,6 +1,7 @@
 import web3 from "../web3";
 
-const address = "0x0366f1f1143397Ee686EFCD083a4Ec20688E6073";
+// const address = "0x0366f1f1143397Ee686EFCD083a4Ec20688E6073"; //Ropsten
+const address = "0x48F5dED0aD02C646D58c7ca54d32b697CDeB93ec"; //Rinkeby
 
 const abi = [
 	{

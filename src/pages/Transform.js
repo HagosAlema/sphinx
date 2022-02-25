@@ -44,26 +44,24 @@ const Transform = () => {
     const [game2Items, setGame2Items] = useState([])
     const [storageItems, setStorageItems] = useState([])
     const [gameItems, setGameItems] = useState([])
+    const [loading, setLoading] = useState(true)
     var game1Nft = []
     var game2Nft = []
     var storageNft = []
 
-    //set the selected menu to 1
-    useEffect(()=>{
-        setSelectedMenu(1)
-    }, [])
+    const [gameNft, setGameNft] = useState({})
+    const [storeNft, setStoreNft] = useState({})
 
 
-
-    //get Game1 items
-    //fetch nft items
+    //get Game1 abd Game2items
     useEffect( async()=>{
+        console.log("Account Address: "+accountAddress);
         const fetchGameItems = async (game)=>{
             console.log('Loading game items')
             var itemList = []
             axios.get('http://localhost:3030/getItemInfo', {
                 params: {
-                    public_key: testAccount,
+                    public_key: accountAddress,
                     game: game
                 }
             }).then((result)=>{
@@ -73,6 +71,7 @@ const Transform = () => {
                 data.forEach((item)=>{
                     const tokenId = item.img_token_id
                     const statId = item.stat_token_id
+                    const modifiedStat = item.modified_stat
                     console.log(tokenId)
                     nft.methods.getUri(tokenId).call().then(res=>{
 
@@ -85,12 +84,12 @@ const Transform = () => {
                                         fetch(statUri)
                                             .then(statData => statData.json())
                                             .then(statJson=> {
-
+                                                    
                                                     fetch(statJson.url)
                                                     .then(statUrl=>statUrl.json())
                                                     .then(itemPower=>{
-
-                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower, tokenId: tokenId, statId: statId}
+                                                        console.log(itemPower);
+                                                        const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: modifiedStat?modifiedStat :itemPower, tokenId: tokenId, statId: statId}
                                                         index++;
                                                         itemList.push(nftItem)
 
@@ -100,9 +99,8 @@ const Transform = () => {
                                                             setGameItems([...itemList], nftItem)
                                                             setGame1Items([...itemList],nftItem)
                                                         } else {
-
                                                             game2Nft.push(nftItem)
-                                                            setGame1Items([...itemList], nftItem)
+                                                            setGame2Items([...itemList], nftItem)
                                                         }
                                                     })
                                                 
@@ -117,29 +115,40 @@ const Transform = () => {
                     })
                 })
                 // setItems(itemList)
-            }).catch(e=>{
+            })
+            .catch(e=>{
                 // console.log(e);
+            }).finally(()=>{
+                setLoading(false)
+                if(game1Items.length>0) {
+                    setGameItems(game1Items)
+                    setGameNft(game1Items[0])
+                    setSelectedMenu(1)
+                } else if (game2Items.length >0) {
+                    setGameItems(game2Items)
+                    setGameNft(game2Items[0])
+                    setSelectedMenu(2)
+                }
             })
         }
         fetchGameItems('game1')
         fetchGameItems('game2')
     },[])
-
     //Get storage items
     useEffect(()=>{
         var itemList = []
         axios.get('http://localhost:3030/getImgInfo', {
             params: {
-                public_key: testAccount
+                public_key: accountAddress
             }
         }).then((result)=>{
             const data = result.data
-
+            console.log(data);
             var index = 1;
             data.forEach((item)=>{
                 const tokenId = item.img_token_id
                 const statId = item.stat_token_id
-
+                const modifiedStat = item.modified_stat;
                 nft.methods.getUri(tokenId).call().then(res=>{
 
                     fetch(res)
@@ -156,12 +165,16 @@ const Transform = () => {
                                                 .then(statUrl=>statUrl.json())
                                                 .then(itemPower=>{
 
-                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: itemPower, tokenId: tokenId, statId: statId}
+                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: modifiedStat? modifiedStat : itemPower, tokenId: tokenId, statId: statId}
+                                                    if(index===1) {
+                                                        setStoreNft(nftItem)
+                                                    }
                                                     index++;
                                                     itemList.push(nftItem)
                                                     storageNft.push(nftItem)
                                                     // setItems([...itemList], nftItem)
                                                     setStorageItems([...itemList],nftItem)
+
                                                 })
                                             
                                         })
@@ -175,11 +188,29 @@ const Transform = () => {
                 })
             })
             // setItems(itemList)
-        }).catch(e=>{
+        }).finally(()=>{
+            setLoading(false)
+        })
+        .catch(e=>{
             // console.log(e);
         })
 
     },[])
+
+
+
+    useEffect(()=>{
+        if(game1Items.length>0) {
+            setGameNft(game1Items[0])
+            setGameItems(game1Items)
+            setSelectedMenu(1)
+        } else if(game2Items.length>0) {
+            setGameNft(game2Items[0])
+            setGameItems(game2Items)
+            setSelectedMenu(2)
+        }
+    },[game1Items, game2Items])
+
 
     const NFT = ({id, name, img, price})=>{
         const navigate = useNavigate()
@@ -209,22 +240,56 @@ const Transform = () => {
     }
 
     const onMenuChange = (menu) => {
+        
         const {id, name} = menu;
         if(id===1){
-            setGameItems(game1Items)
-            setSelectedMenu(id)
+            if(game1Items.length>0) {
+                setGameNft(game1Items[0])
+                setGameItems(game1Items)
+                setSelectedMenu(id)
+            } else {
+                window.alert('No items')
+            }
         } else if(id===2) {
-            setGameItems(game2Items)
-            setSelectedMenu(id)
+            if(game2Items.length>0) {
+                setGameNft(game2Items[0])
+                setGameItems(game2Items)
+                setSelectedMenu(id)
+            } else {
+                window.alert('No items')
+            }
         }
     }
 
     const onGameItemChange = (e) => {
-        console.log(e.target.value)
+        const value = e.target.value
+        console.log("Value: "+value)
+        console.log(gameItems)
+        const nft = gameItems.find(item=>item.tokenId==value)
+        console.log(nft)
+        setGameNft(nft)
     }
 
     const onStorageItemChange = (e) => {
-        console.log(e.taget.value)
+        // console.log(e.taget.value)
+        const value = e.taget.value
+        console.log(value)
+        if(storageItems.length>0) {
+            const nft = storageItems.find(item=>item.tokenId==value)
+            setStoreNft(nft)
+        }
+    }
+    const TransformItem = () => {
+        axios.get('http://localhost:3030/changeItemImage', {
+            params: {
+                new_img_token_id: storeNft.tokenId,
+                old_img_token_id: gameNft.tokenId
+            }
+        }).then(result=>{
+            console.log(result)
+            setTransformConfirm(false)
+            setConfirm(true)
+        })
     }
 
     return (
@@ -266,8 +331,9 @@ const Transform = () => {
                     
                     <div className='row'>
                         <div className='col-4 d-flex flex-column centered'>
-                        <NFTSlider name={gameItems[0].name} price={gameItems[0].price} img={gameItems[0].image} id={gameItems[0].id} buyWeapon={()=>{}} power={gameItems[0].power} hidePrice={true}/>
-                            <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16 padding-horozontal-24" 
+                        {gameItems.length>0 ?<NFTSlider name={gameNft.name} price={gameNft.price} img={gameNft.image} id={gameNft.id} buyWeapon={()=>{}} power={gameNft.power} hidePrice={true}/> : null}
+                            {gameItems.length>0 ?
+                                <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16 padding-horozontal-24" 
                                 onChange={onGameItemChange}
                                 defaultValue={gameItems[0].tokenId}
                             >
@@ -279,29 +345,26 @@ const Transform = () => {
                                         key={item.id}>{item.name}</option>
                                     ))
                                 }
-                                {/* <option>BLACK RIFFLE_GAME1 NFT</option>
-                                <option>BLACK RIFFLE_GAME1 NFT</option>
-                                <option>BLACK RIFFLE_GAME1 NFT</option>
-                                <option>BLACK RIFFLE_GAME1 NFT</option> */}
-                            </select>
+                            </select>:null}
                         </div>
                         <div className="col-4 centered">
                             <Exchange />
                         </div>
                         <div className='col-4 d-flex flex-column centered'>
-                            <NFTSlider name={gameItems[0].name} price={gameItems[0].price} img={gameItems[0].image} id={gameItems[0].id} buyWeapon={()=>{}} power={gameItems[0].power} hidePrice={true}/>
+                            {storageItems.length>0? <NFTSlider name={storeNft.name} price={storeNft.price} img={storeNft.image} id={storeNft.id} buyWeapon={()=>{}} power={storeNft.power} hidePrice={true}/>:null}
                             {/* <NFT name={weapons[1].name} price={weapons[1].price} img={weapons[1].image} id={weapons[1].id}/> */}
-                            <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16"
+                            {storageItems.length>0 ? <select className="transparent-bg stat-input font-size-18 white-bg text-black top-16"
                                 onChange={onStorageItemChange}
                             >
                                 {
                                     storageItems.map((item, idx)=>(
                                         <option 
                                         id={item.id}
-                                        key={item.id}>{item.name}</option>
+                                        key={item.id}
+                                        value={item.tokenId}>{item.name}</option>
                                     ))
                                 }
-                            </select>
+                            </select>:null}
                         </div>
                     </div>
                     <div className="centered">
@@ -336,13 +399,13 @@ const Transform = () => {
                     
                     <div className='row'>
                         <div className='col-4 d-flex flex-column centered'>
-                        <NFTSlider name={gameItems[0].name} price={gameItems[0].price} img={gameItems[0].image} id={gameItems[0].id} buyWeapon={()=>{}} power={gameItems[0].power} hidePrice={true}/>
+                        <NFTSlider name={gameNft.name} price={gameNft.price} img={gameItems[0].image} id={gameItems[0].id} buyWeapon={()=>{}} power={gameItems[0].power} hidePrice={true}/>
                         </div>
                         <div className="col-4 centered">
                             <Exchange />
                         </div>
                         <div className='col-4 d-flex flex-column centered'>
-                        <NFTSlider name={gameItems[0].name} price={gameItems[0].price} img={gameItems[0].image} id={gameItems[0].id} buyWeapon={()=>{}} power={gameItems[0].power} hidePrice={true}/>
+                        <NFTSlider name={storeNft.name} price={storeNft.price} img={storeNft.image} id={storeNft.id} buyWeapon={()=>{}} power={storeNft.power} hidePrice={true}/>
                         </div>
                     </div>
                     <div className="d-flex flex-row centered padding-vertical-48">
@@ -358,7 +421,7 @@ const Transform = () => {
             ): null}
             </div>)
             : <div className='nft-bg padding-horizontal-48 top-60 padding-vertical-60'>
-                <p className="text-white d-flex centered font-size-48">No Items to transform</p>
+                <p className="text-white d-flex centered font-size-48"> {loading?`L o a d i n g . . .`: `No Items to transform`}</p>
             </div>
             }
 
@@ -369,13 +432,13 @@ const Transform = () => {
                         {/* <div className='centered padding-vertical-72 top-32 bottom-12'><p className='purchase-nft-body '>정말로 구매 하시겠습니까?</p></div> */}
                         <div className='centered d-flex flex-column'>
                             {/* <Confirm/> */}
-                            <p className='purchase-nft-body top-8'>정말로 _____ 아이템의 <br /> 외형을 바꾸시겠습니까?</p>
+                            <p className='purchase-nft-body top-8'>정말로 {gameNft.name} 아이템의 <br /> 외형을 바꾸시겠습니까?</p>
                         </div>
                         
                         <div className='d-flex flex-row centered top-72 bottom-32'>
                             <button onClick={()=>{
-                                setTransformConfirm(false)
-                                setConfirm(true)
+                                
+                                TransformItem()
                                 }} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>확인 </button>
                             <div className='gradient-bg radius-20 padding-horizontal-1 padding-vertical-1 link centered left-24' onClick={()=>{setTransformConfirm(false)}}>
                                 <p className='black-bg-20  text-white centered padding-horizontal-16 height-38'>취소</p>
