@@ -3,6 +3,7 @@ import { useLocation, Routes, Route } from 'react-router-dom';
 import Switches from './Switches';
 import Trade from './pages/Trade';
 import Loading from './components/Loading';
+import Game from './components/Game';
 
 const Routers = () => {
     const loading = () => <Loading />;
@@ -17,6 +18,7 @@ const Routers = () => {
             <Routes>
                 <Route path="/*" element={<Switches />} />
                 <Route path="/login" element={<Trade />} />
+                <Route path="/game" element={<Game />} />
             </Routes>
         </Suspense>
         
