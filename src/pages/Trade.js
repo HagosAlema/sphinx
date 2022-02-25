@@ -117,8 +117,8 @@ const Trade = () => {
             }).then(()=>{
                 setShow(false)
                 setShowConfirm(true)    
-            })
-        });
+            });
+        })
     }
 
 

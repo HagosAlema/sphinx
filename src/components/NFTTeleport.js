@@ -17,7 +17,7 @@ const items = [
     {id: 3, name: "Empty"}
 ]
 
-const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
+const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect, hidePrice, power})=>{
     const navigate = useNavigate()
     const [selectedIcon, setSelectedIcon] = useState(0)
 
@@ -58,7 +58,7 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
                         </div>
                     </div>
                     <div className='nft-bottom-bg height-82'>
-                        <p className='price-text centered'>{price} CHURR</p>
+                        {!hidePrice?<p className='price-text centered'>{price} CHURR</p>:null}
                     </div>
                 </div>
                 :
@@ -67,7 +67,7 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
                         <SwordIcon />
                         <p className="left-16 nft-power-text"
                             style={{fontSize: '2.5rem'}}
-                        >800-1000</p>
+                        >{power}</p>
                     </div>
                     {/* <div className="d-flex flex-row padding-horizontal-36">
                         <p 
@@ -107,7 +107,6 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
                         key={id}
                         className={selectedIcon === id ?"link white-bg width-16 height-16 radius-8 right-4 left-4 border-1": "link transparent-bg width-8 height-8 radius-4 right-4 left-4 border-1"}
                         onClick={()=>{
-                            console.log(id, icon.id)
                             setSelectedIcon(icon.id)
                         }}
                         ></div>
@@ -115,7 +114,7 @@ const NFTTeleport = ({id, name, img, price, buyWeapon, onItemSelect})=>{
             }
             </div>
             <div className="d-flex centered top-16">
-                <button onClick={()=>onItemSelect(id, name, price, img)} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>선택하기</button>
+                <button onClick={()=>onItemSelect(id, name, price, img, power)} className='gradient-bg padding-vertical-4 padding-horizontal-24 radius-20 height-40 text-black'>선택하기</button>
             </div>
 
         </div>
