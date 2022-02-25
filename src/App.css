@@ -13,6 +13,31 @@
   height: 40vmin;
   pointer-events: none;
 }
+.Game-loading {
+  text-align: center;
+  height: 300px;
+}
+
+.Game-loading-text {
+  text-align: center;
+}
+.Game-loading-image {
+}
+.Game-loading-button {
+  display: inline-block;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  
+  width: 211px;
+  height: 50px;
+  left: 50%;
+  top: 50%;
+  
+  background: linear-gradient(214.02deg, #F37500 6.04%, #FFFFFF 92.95%);
+  border-radius: 10px;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
