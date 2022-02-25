@@ -51,7 +51,7 @@ const MyPage = () => {
         const fetchGameItems = async (game)=>{
             console.log('Loading game items')
             var itemList = []
-            axios.get('http://localhost:3030/getItemInfo', {
+            axios.get('http://3.34.2.167:3000/getItemInfo', {
                 params: {
                     public_key: walletAddress,
                     game: game
@@ -120,7 +120,7 @@ const MyPage = () => {
     useEffect(()=>{
         console.log('loading storage items')
         var itemList = []
-        axios.get('http://localhost:3030/getImgInfo', {
+        axios.get('http://3.34.2.167:3000/getImgInfo', {
             params: {
                 public_key: walletAddress
             }
