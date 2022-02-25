@@ -93,7 +93,7 @@ const MyPage = () => {
                                                         } else {
 
                                                             game2Nft.push(nftItem)
-                                                            setGame1Items([...itemList], nftItem)
+                                                            setGame2Items([...itemList], nftItem)
                                                         }
                                                     })
                                                 
@@ -194,10 +194,12 @@ const MyPage = () => {
             // console.log(game1Nft);
         } else if(id === 2) {
             setItems(game2Items)
+            console.log("Game2 items: ", game2Items)
         } else {
             setItems(storageItems)
         }
     }
+
 
     useEffect(()=>{
         setSelectedMenu(1)

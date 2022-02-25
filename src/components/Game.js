@@ -5,10 +5,17 @@ import Web3 from 'web3';
 import nft from '../contracts/nft';
 import loadingImg from "../assets/images/Loading.gif";
 import { Gif } from '@mui/icons-material';
+import {useNavigate} from 'react-router-dom'
+import SelectInput from '@mui/material/Select/SelectInput';
+import { useRecoilValue } from 'recoil';
+import { accountAtom } from '../atoms/state';
 
 
 const Game = (object) => {
     window.web3 = new Web3(window.ethereum);
+    const [processed, setProcessed] = useState(false)
+    const navigate = useNavigate();
+    const accountAddress = useRecoilValue(accountAtom)
     window.ethereum.enable();
     const [returnData, setReturnData] = useState("a")
     var params = window.location.search.substr(window.location.search.indexOf("?") + 1);
@@ -58,8 +65,10 @@ const Game = (object) => {
             const URIImg = response.data.attr_img_url
             const URIStat = response.data.attr_stat_url
             registerNFT(URIImg, URIStat, game, name)
+        }).catch((e)=>{
+            navigate('/')
         })
-    })
+    }, [])
 
     async function registerNFT (URIImg, URIStat, game, name) {
         console.log("registerNFT")
@@ -83,12 +92,17 @@ const Game = (object) => {
                             method: 'get'
                         }).then(function(response) {
                             console.log(response.data)
+                            navigate('/')
                         })
+                    }).catch((e)=>{
+                        navigate('/')
                     })
                 }
             })
             
             console.log("registerNFT result:", receipt.events.Transfer.returnValues[2]);
+        }).catch(async(e)=>{
+            navigate('/')
         })
 
     }
@@ -97,7 +111,7 @@ const Game = (object) => {
             <div className='Game-loading-text'>wad</div>
             <img className='Game-loading-image' src={loadingImg}/>
             <br></br>
-            <button className='Game-loading-button'>asd</button>
+            {/* <button className='Game-loading-button'>asd</button> */}
         </div>
     )
 }

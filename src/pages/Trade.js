@@ -296,6 +296,7 @@ const Trade = () => {
             console.log("registerNFT result:",receipt.events.Transfer.returnValues[2]);
             const tokenId = receipt.events.Transfer.returnValues[2]
             saveTokenToDatabase(tokenId)
+            window.location.reload(false)
         }).catch(e=>{
             setShowSpinner(false)
             console.log("error", e);

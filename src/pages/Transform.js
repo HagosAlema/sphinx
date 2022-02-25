@@ -139,6 +139,7 @@ const Transform = () => {
 
     // Get storage items
     useEffect(()=>{
+        console.log('Getting storage items');
         var itemList = []
         axios.get('http://localhost:3030/getImgInfo', {
             params: {
@@ -159,11 +160,12 @@ const Transform = () => {
                         .then(json => {
                             nft.methods.getNFTValue(tokenId).call().then(value=>{
                                 //get stat info
-                                nft.methods.getUri(statId).call().then((statUri)=>{
+                                // nft.methods.getUri(statId).call().then((statUri)=>{
                                     
                                     const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: 'undefined', tokenId: tokenId, statId: statId}
                                     if(index===1) {
                                         setStoreNft(nftItem)
+                                        console.log('First item of storage', nftItem)
                                     }
                                     index++;
                                     itemList.push(nftItem)
@@ -173,10 +175,12 @@ const Transform = () => {
                                     
                                 })
                                 
-                            })
+                            // })
                         }).catch(er=>{
                             console.log("ERROR==>"+er)
                         })
+                }).catch(e=>{
+                    console.log("ERROR=>"+e)
                 })
             })
             // setItems(itemList)
@@ -272,10 +276,12 @@ const Transform = () => {
         }
     }
     const TransformItem = () => {
+        console.log('Transform item',storeNft.tokenId,gameNft.tokenId,gameNft.statId)
         axios.get('http://localhost:3030/changeItemImage', {
             params: {
                 new_img_token_id: storeNft.tokenId,
-                old_img_token_id: gameNft.tokenId
+                old_img_token_id: gameNft.tokenId,
+                stat_id: parseInt(gameNft.statId)
             }
         }).then(result=>{
             console.log(result)
