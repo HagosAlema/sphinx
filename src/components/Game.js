@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Web3 from 'web3';
 import nft from '../contracts/nft';
 import loadingImg from "../assets/images/Loading.gif";
+import { Gif } from '@mui/icons-material';
 
 
 const Game = (object) => {
@@ -94,7 +95,7 @@ const Game = (object) => {
     return (
         <div className='Game-loading'>
             <div className='Game-loading-text'>wad</div>
-            <Gif className='Game-loading-image' ref={(loadingImg) => this.currentGif = gif}></Gif>>
+            <img className='Game-loading-image' src={loadingImg}/>
             <br></br>
             <button className='Game-loading-button'>asd</button>
         </div>

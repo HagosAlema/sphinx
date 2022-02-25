@@ -134,3 +134,27 @@ const Nav = () => {
 }
 
 export default Nav;
+
+
+
+{/* <Logo onClick={() => navigate('/')} className="row height-80 link white left-48"/> */}
+                    {/* <div className='menus row align-center'>
+                        <ul className='menu-list '>
+                            <li className="menu-item inline-block left-48" >
+                                <span
+                                    onClick={() => navigate('/')}
+                                    className="name font-weight-600 neturals-5 to-color-white-hover link"
+                                >
+                                    Home
+                                </span>
+                            </li>
+                            <li className="menu-item inline-block left-48">
+                                <span
+                                    onClick={() => navigate('/trade')}
+                                    className="name font-weight-600 neturals-5 to-color-white-hover link "
+                                >
+                                    NFT Trade
+                                </span>
+                            </li>
+                        </ul>
+                    </div> */}
