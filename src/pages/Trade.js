@@ -111,7 +111,7 @@ const Trade = () => {
         .on('error', function(error){ console.error(error) })
         .then(function(receipt){
             console.log(receipt);
-            axios.get('http://localhost:3030/buyNftImg', {
+            axios.get('http://3.34.2.167:3000/buyNftImg', {
                 params: {
                     token_id: nftId,
                     public_key: accountAddress,
@@ -131,7 +131,7 @@ const Trade = () => {
     //fetch nft items
     useEffect(()=>{
         var itemList = []
-        axios.get('http://localhost:3030/getItemList', {
+        axios.get('http://3.34.2.167:3000/getItemList', {
             params: {
                 public_key: accountAddress
             }
@@ -268,7 +268,7 @@ const Trade = () => {
 
     const saveTokenToDatabase = (tokenId) => {
         console.log('Uploading nft info to database started .... ')
-        axios.get('http://localhost:3030/saveMarketTokenId', {
+        axios.get('http://3.34.2.167:3000/saveMarketTokenId', {
             params:{
                 token_id: tokenId,
                 public_key: accountAddress,
@@ -309,7 +309,7 @@ const Trade = () => {
             formData.append("img",localImage)
             formData.append("name", itemImage)
             formData.append('public_key', accountAddress)
-            axios.post('http://localhost:3030/mintDesignNFT',formData, {headers:{ 'Content-Type': 'multipart/form-data' }}).then(result=>{
+            axios.post('http://3.34.2.167:3000/mintDesignNFT',formData, {headers:{ 'Content-Type': 'multipart/form-data' }}).then(result=>{
                 setJsonAddress(result.data.attr_img_url)    
                 console.log('attribute',result.data.attr_img_url)
                 uploadToBlockChain(result.data.attr_img_url)

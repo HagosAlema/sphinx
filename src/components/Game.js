@@ -52,7 +52,7 @@ const Game = (object) => {
     useEffect(() => {
         if (returnData !== "a" ) return;
         axios({
-            url: 'http://localhost:3030/mintGameNFT',
+            url: 'http://3.34.2.167:3000/mintGameNFT',
             method: 'post',
             data: {
                 name: name,
@@ -79,7 +79,7 @@ const Game = (object) => {
             console.log(receipt, "receipt");
             const img_token_id = receipt.events.Transfer.returnValues[2]
             axios({
-                url: 'http://localhost:3030/saveImgTokenId?token_id=' + img_token_id + '&game=' + game + '&public_key=' + publicKey + '&name=' + name,
+                url: 'http://3.34.2.167:3000/saveImgTokenId?token_id=' + img_token_id + '&game=' + game + '&public_key=' + publicKey + '&name=' + name,
                 method: 'get',
             }).then(function(response) {
                 if (response.data === "success") {
@@ -88,7 +88,7 @@ const Game = (object) => {
                     .on('error', function(error){ console.error(error) })
                     .then(function(receipt){
                         axios({
-                            url: 'http://localhost:3030/saveStatTokenId?stat_token_id=' + receipt.events.Transfer.returnValues[2] + "&img_token_id=" + img_token_id + "&public_key=" + publicKey,
+                            url: 'http://3.34.2.167:3000/saveStatTokenId?stat_token_id=' + receipt.events.Transfer.returnValues[2] + "&img_token_id=" + img_token_id + "&public_key=" + publicKey,
                             method: 'get'
                         }).then(function(response) {
                             console.log(response.data)

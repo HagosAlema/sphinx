@@ -59,7 +59,7 @@ const Transform = () => {
         const fetchGameItems = async (game)=>{
             console.log('Loading game items')
             var itemList = []
-            axios.get('http://localhost:3030/getItemInfo', {
+            axios.get('http://3.34.2.167:3000/getItemInfo', {
                 params: {
                     public_key: accountAddress,
                     game: game
@@ -141,7 +141,7 @@ const Transform = () => {
     useEffect(()=>{
         console.log('Getting storage items');
         var itemList = []
-        axios.get('http://localhost:3030/getImgInfo', {
+        axios.get('http://3.34.2.167:3000/getImgInfo', {
             params: {
                 public_key: accountAddress
             }
@@ -277,7 +277,7 @@ const Transform = () => {
     }
     const TransformItem = () => {
         console.log('Transform item',storeNft.tokenId,gameNft.tokenId,gameNft.statId)
-        axios.get('http://localhost:3030/changeItemImage', {
+        axios.get('http://3.34.2.167:3000/changeItemImage', {
             params: {
                 new_img_token_id: storeNft.tokenId,
                 old_img_token_id: gameNft.tokenId,

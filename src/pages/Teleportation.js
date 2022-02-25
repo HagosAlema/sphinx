@@ -41,7 +41,7 @@ const Teleportation = () => {
             console.log('Loading game items', option1, option2)
             setWeapons([]);
             var itemList = []
-            axios.get('http://localhost:3030/getItemInfo', {
+            axios.get('http://3.34.2.167:3000/getItemInfo', {
                 params: {
                     // public_key: testAccount,
                     public_key:accountAddress,
@@ -102,7 +102,7 @@ const Teleportation = () => {
 
     const doTeleportation = (event) => {
         console.log("doteleportation start",changeItem, option1, option2 ,changeItem.id)
-        axios.get('http://localhost:3030/changeItemGame', {
+        axios.get('http://3.34.2.167:3000/changeItemGame', {
             params:{
                 img_token_id: changeItem.id,
                 newGame: option2,
