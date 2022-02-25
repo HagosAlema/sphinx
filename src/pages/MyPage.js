@@ -46,6 +46,7 @@ const MyPage = () => {
     const game1Nft = []
     const game2Nft = []
     const storageNft = []
+// <<<<<<< Updated upstream
 
     useEffect( async()=>{
         const fetchGameItems = async (game)=>{
@@ -139,23 +140,29 @@ const MyPage = () => {
                             nft.methods.getNFTValue(tokenId).call().then(value=>{
                                 //get stat info
                                 nft.methods.getUri(statId).call().then((statUri)=>{
-                                    fetch(statUri)
-                                        .then(statData => statData.json())
-                                        .then(statJson=> {
+                                    // fetch(statUri)
+                                    //     .then(statData => statData.json())
+                                    //     .then(statJson=> {
 
-                                                fetch(statJson.url)
-                                                .then(statUrl=>statUrl.json())
-                                                .then(itemPower=>{
+                                    //             fetch(statJson.url)
+                                    //             .then(statUrl=>statUrl.json())
+                                    //             .then(itemPower=>{
 
-                                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: modifiedStat? modifiedStat : itemPower}
-                                                    index++;
-                                                    itemList.push(nftItem)
-                                                    storageNft.push(nftItem)
-                                                    // setItems([...itemList], nftItem)
-                                                    setStorageItems([...itemList],nftItem)
-                                                })
+                                    //                 const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: modifiedStat? modifiedStat : itemPower}
+                                    //                 index++;
+                                    //                 itemList.push(nftItem)
+                                    //                 storageNft.push(nftItem)
+                                    //                 // setItems([...itemList], nftItem)
+                                    //                 setStorageItems([...itemList],nftItem)
+                                    //             })
                                             
-                                        })
+                                    //     })
+                                    const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value, power: 'undefined'}
+                                    index++;
+                                    itemList.push(nftItem)
+                                    storageNft.push(nftItem)
+                                    // setItems([...itemList], nftItem)
+                                    setStorageItems([...itemList],nftItem)
                                     
                                 })
                                 
@@ -190,6 +197,115 @@ const MyPage = () => {
         setSelectedMenu(1)
     },[])
 
+// =======
+
+
+
+//     //get Game1 items
+//     //fetch nft items
+//     useEffect(()=>{
+//         const fetchGameItems = (game)=>{
+//             console.log('Loading game items')
+//             var itemList = []
+//             axios.get('http://localhost:3030/getItemInfo', {
+//                 params: {
+//                     public_key: testAccount,
+//                     game:game
+//                 }
+//             }).then((result)=>{
+//                 const data = result.data
+//                 console.log((result.data));
+//                 var index = 1;
+//                 data.forEach((item)=>{
+//                     const tokenId = item.img_token_id
+//                     console.log(tokenId)
+//                     nft.methods.getUri(tokenId).call().then(res=>{
+//                         console.log(res);
+//                         fetch(res)
+//                             .then(response => response.json())
+//                             .then(json => {
+//                                 nft.methods.getNFTValue(tokenId).call().then(value=>{
+//                                     const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
+//                                     index++;
+//                                     itemList.push(nftItem)
+
+//                                     if(game==='game1'){
+//                                         game1Nft.push(nftItem)
+//                                         setItems([...itemList], nftItem)
+//                                         setGame1Items([...itemList],nftItem)
+//                                     } else {
+//                                         game2Nft.push(nftItem)
+//                                         setGame1Items([...itemList], nftItem)
+//                                     }
+//                                 })
+//                             }).catch(er=>{
+//                                 console.log("ERROR==>"+er)
+//                             })
+//                     })
+//                 })
+//                 // setItems(itemList)
+//             }).catch(e=>{
+//                 // console.log(e);
+//             })
+//         }
+//         fetchGameItems('game1')
+//         fetchGameItems('game2')
+//     },[])
+
+//     //Get storage items
+//     useEffect(()=>{
+//         var itemList = []
+//             axios.get('http://localhost:3030/getImgInfo', {
+//                 params: {
+//                     public_key: testAccount,
+//                 }
+//             }).then((result)=>{
+
+//                 const data = result.data
+//                 console.log((result.data));
+//                 var index = 1;
+//                 data.forEach((item)=>{
+//                     const tokenId = item.img_token_id
+//                     console.log(tokenId)
+//                     nft.methods.getUri(tokenId).call().then(res=>{
+//                         console.log(res)
+//                         fetch(res)
+//                             .then(response => response.json())
+//                             .then(json => {
+//                                 console.log(json)
+//                                 nft.methods.getNFTValue(tokenId).call().then(value=>{
+//                                     const nftItem ={name: item.name ? item.name :'Undefined', id: index, image: json.url, price: value}
+//                                     index++;
+//                                     itemList.push(nftItem)
+//                                     storageNft.push(nftItem)
+//                                     setStorageItems([...itemList],nftItem)
+//                                 })
+//                             }).catch(er=>{
+//                                 console.log("ERROR==>"+er)
+//                             })
+//                     })
+//                 })
+//                 // setItems(itemList)
+//             }).catch(e=>{
+//                 console.log(e);
+//             })
+//     },[])
+
+//     const onMenuChange = (menu) => {
+//         console.log(game2Nft)
+//         const {id, name} = menu;
+//         setSelectedMenu(id)
+//         if(id===1){
+//             setItems(game1Nft)
+//             console.log(game1Nft);
+//         } else if(id === 2) {
+//             setItems(game2Nft)
+//         } else {
+//             setItems(storageNft)
+//         }
+//     }
+
+// >>>>>>> Stashed changes
     return (
         <div className="row top-108" style={{height:'auto'}}>
             <Image fluid={false} src={banner} />
