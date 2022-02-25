@@ -19,10 +19,23 @@
 }
 
 .Game-loading-text {
+  margin-top: 400px;
   text-align: center;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 54px;
+  line-height: 81px;
 }
+.Game-loading-text span {
+  background: linear-gradient(180deg, #C09645 7.5%, #FFC977 53.75%, #C09645 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .Game-loading-image {
 }
+
 .Game-loading-button {
   display: inline-block;
   flex-direction: row;

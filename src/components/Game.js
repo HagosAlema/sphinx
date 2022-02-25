@@ -4,12 +4,16 @@ import { useEffect, useState } from 'react'
 import Web3 from 'web3';
 import nft from '../contracts/nft';
 import loadingImg from "../assets/images/Loading.gif";
-
+import loadingStop from "../assets/images/LoadingStop.png"
+import {useNavigate} from 'react-router-dom';
 
 const Game = (object) => {
     window.web3 = new Web3(window.ethereum);
     window.ethereum.enable();
+    const navigate = useNavigate()
     const [returnData, setReturnData] = useState("a")
+    const [loading, setLoading] = useState(0)
+    const [isBlocking, setIsBlocking] = useState(false)
     var params = window.location.search.substr(window.location.search.indexOf("?") + 1);
     var sval = ""
     var name = ""
@@ -41,6 +45,8 @@ const Game = (object) => {
     image = image.split("?")[0]
     const image_buffer = Buffer.from(image, "utf-8")
 
+    
+
     useEffect(() => {
         if (returnData !== "a" ) return;
         axios({
@@ -59,14 +65,11 @@ const Game = (object) => {
             registerNFT(URIImg, URIStat, game, name)
         })
     })
+    
 
     async function registerNFT (URIImg, URIStat, game, name) {
-        console.log("registerNFT")
         nft.methods.registerNFT(URIImg).send({from: publicKey, gas:3000000})
-        .once('sending', (payload) => { console.log(payload);})
-        .on('error', function(error){ console.error(error) })
         .then(function(receipt){
-            console.log(receipt, "receipt");
             const img_token_id = receipt.events.Transfer.returnValues[2]
             axios({
                 url: 'http://localhost:3030/saveImgTokenId?token_id=' + img_token_id + '&game=' + game + '&public_key=' + publicKey + '&name=' + name,
@@ -81,22 +84,27 @@ const Game = (object) => {
                             url: 'http://localhost:3030/saveStatTokenId?stat_token_id=' + receipt.events.Transfer.returnValues[2] + "&img_token_id=" + img_token_id + "&public_key=" + publicKey,
                             method: 'get'
                         }).then(function(response) {
-                            console.log(response.data)
+                            setLoading(1)
                         })
                     })
                 }
             })
-            
-            console.log("registerNFT result:", receipt.events.Transfer.returnValues[2]);
         })
-
     }
     return (
         <div className='Game-loading'>
-            <div className='Game-loading-text'>wad</div>
-            <Gif className='Game-loading-image' ref={(loadingImg) => this.currentGif = gif}></Gif>>
-            <br></br>
-            <button className='Game-loading-button'>asd</button>
+            {loading === 0 ? 
+            <div>
+                <p className='Game-loading-text'><span>SPHINX가 NFT를 발급중입니다.</span></p>
+                <img className='Game-loading-image' src={loadingImg}></img>
+            </div>
+            :
+            <div> 
+                <p className='Game-loading-text'><span>발급 완료</span></p>
+                <img className='Game-loading-image' src={loadingStop}></img>
+                <br></br>
+                <button className='Game-loading-button' onClick={() => navigate('/')}>홈페이지 바로가기</button>
+            </div>}
         </div>
     )
 }
